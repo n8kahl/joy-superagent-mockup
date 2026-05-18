@@ -160,6 +160,31 @@ select{appearance:none;background:#fff;cursor:pointer}
 .ev-card{border:1.5px solid #e2e2ec;border-radius:9px;padding:14px;background:#fff}
 .ev-lbl{font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em}
 .ev-val{font-size:26px;font-weight:700;color:#1a1a2e;margin-top:3px}
+/* ── Eval v2 ────────────────────────────────────────── */
+.ev2-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.ev2-stat{background:#fff;border:1.5px solid #e2e2ec;border-radius:10px;padding:16px 18px;transition:box-shadow .15s}
+.ev2-stat:hover{box-shadow:0 4px 14px rgba(0,0,0,.07)}
+.ev2-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.ev2-val{font-size:30px;font-weight:800;color:#1a1a2e;line-height:1;letter-spacing:-.02em}
+.ev2-lbl{font-size:11px;font-weight:600;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-top:5px}
+.ev2-sub{font-size:11px;color:#b0b0c0;margin-top:3px}
+.ev2-acc{background:#fff;border:1.5px solid #e2e2ec;border-radius:10px;padding:18px;margin-bottom:22px}
+.ev2-acc-bar{height:12px;border-radius:6px;overflow:hidden;display:flex;gap:3px;margin:12px 0 10px}
+.ev2-acc-seg{border-radius:3px}
+.ev2-q-card{background:#fff;border:1.5px solid #e2e2ec;border-radius:10px;margin-bottom:12px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.ev2-q-card:hover{border-color:#c4b5fd;box-shadow:0 4px 14px rgba(124,58,237,.08)}
+.ev2-q-hdr{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;cursor:pointer}
+.ev2-q-num{width:24px;height:24px;border-radius:50%;background:#f0f0f8;color:#8080a0;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ev2-q-text{flex:1;font-size:13px;color:#1a1a2e;font-weight:500;line-height:1.55}
+.ev2-verdict{padding:3px 11px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.02em}
+.ev2-verdict.acc{background:#d1fae5;color:#065f46}
+.ev2-verdict.par{background:#fef3c7;color:#92400e}
+.ev2-verdict.bad{background:#fee2e2;color:#dc2626}
+.ev2-q-body{padding:14px 16px;border-top:1px solid #f0f0f8;display:grid;grid-template-columns:1fr 1fr;gap:14px;animation:fadeUp .15s ease}
+.ev2-col-hdr{font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.ev2-col-body{font-size:12.5px;color:#3d3d5c;line-height:1.65}
+.ev2-reasoning{grid-column:1/-1;background:#faf8ff;border-radius:7px;padding:11px 13px;font-size:12px;color:#4b4b6b;line-height:1.65;border-left:3px solid #c4b5fd}
+.ev2-score-pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;background:#ede9fe;color:#7c3aed;margin-left:auto;flex-shrink:0}
 
 /* ── Access user ───────────────────────────────────── */
 .u-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
@@ -305,44 +330,62 @@ input[type=text],textarea,select{transition:border-color .15s,box-shadow .15s}
 .act-type.api{background:#fef3c7;color:#92400e}
 
 /* ── Chat Modal ─────────────────────────────────────── */
-.chat-overlay{position:fixed;inset:0;background:rgba(10,10,30,.52);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+@keyframes botBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.chat-overlay{position:fixed;inset:0;background:rgba(10,10,30,.38);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .chat-overlay.open{opacity:1;pointer-events:all}
-.chat-modal{width:580px;height:700px;background:#fff;border-radius:16px;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.22);overflow:hidden;transform:translateY(28px) scale(.96);transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s;opacity:0}
+.chat-modal{width:min(920px,97vw);height:min(760px,95vh);background:#fff;border-radius:14px;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.2);overflow:hidden;transform:translateY(28px) scale(.97);transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s;opacity:0}
 .chat-overlay.open .chat-modal{transform:translateY(0) scale(1);opacity:1}
-.chat-hdr{padding:15px 20px;background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.chat-hdr-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid rgba(255,255,255,.35)}
-.chat-hdr-avatar svg{width:18px;height:18px;color:#fff}
-.chat-hdr-info{flex:1}
-.chat-hdr-info .ch-name{font-size:15px;font-weight:700;color:#fff}
-.chat-hdr-info .ch-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:1px;display:flex;align-items:center;gap:5px}
-.ch-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block}
-.chat-hdr-close{background:rgba(255,255,255,.15);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;color:#fff;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .15s;padding:0}
-.chat-hdr-close:hover{background:rgba(255,255,255,.28)}
-.chat-messages{flex:1;overflow-y:auto;padding:18px 18px 8px;display:flex;flex-direction:column;gap:12px;background:#f8f7fc}
-.chat-bubble-joy{display:flex;align-items:flex-start;gap:9px;animation:fadeUp .2s ease}
-.joy-bub-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;margin-top:1px}
-.cb-joy-inner{background:#fff;border:1.5px solid #e2e2ec;border-radius:3px 12px 12px 12px;padding:11px 14px;font-size:13px;color:#1a1a2e;line-height:1.7;max-width:450px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.chat-bubble-user{display:flex;justify-content:flex-end;animation:fadeUp .2s ease}
-.cb-user-inner{background:#7c3aed;color:#fff;border-radius:12px 12px 3px 12px;padding:10px 14px;font-size:13px;line-height:1.55;max-width:370px;font-weight:500}
-.chat-thinking{display:flex;align-items:center;gap:5px;padding:10px 14px;background:#fff;border:1.5px solid #e2e2ec;border-radius:3px 12px 12px 12px;width:fit-content;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-left:37px}
-@keyframes tcBounce{0%,100%{transform:translateY(0);opacity:.5}45%{transform:translateY(-5px);opacity:1}}
-.chat-thinking .dot{width:7px;height:7px;border-radius:50%;background:#c4b5fd;animation:tcBounce .95s ease-in-out infinite}
-.chat-thinking .dot:nth-child(2){animation-delay:.16s}
-.chat-thinking .dot:nth-child(3){animation-delay:.32s}
-.tool-use-row{display:flex;align-items:center;gap:8px;padding:6px 11px;background:#faf8ff;border-radius:20px;border:1px solid #ede9fe;font-size:11px;color:#7c3aed;margin-left:37px;width:fit-content;animation:fadeUp .18s ease}
+.chat-hdr{padding:8px 16px;background:#fff;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chat-hdr-logo{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.chat-hdr-title{font-size:13px;font-weight:600;color:#1a1a2e}
+.chat-hdr-btn{background:#f5f5fa;border:1px solid #e2e2ec;color:#4b4b6b;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:500;display:inline-flex;align-items:center;gap:4px;transition:border-color .15s,color .15s}
+.chat-hdr-btn:hover{border-color:#7c3aed;color:#7c3aed}
+.chat-hdr-close{margin-left:6px;background:none;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer;color:#a0a0b0;font-size:19px;display:flex;align-items:center;justify-content:center;padding:0;transition:background .15s}
+.chat-hdr-close:hover{background:#f5f0ff;color:#7c3aed}
+.chat-messages{flex:1;overflow-y:auto;padding:32px 60px;display:flex;flex-direction:column;gap:18px;background:#fff}
+.chat-messages.splash-mode{align-items:center;justify-content:center;background:linear-gradient(180deg,#fff 0%,#f9f8fc 100%)}
+.chat-splash-title{font-size:30px;font-weight:700;text-align:center;line-height:1.3}
+.msg-user{display:flex;justify-content:flex-end;animation:fadeUp .2s ease}
+.msg-user-wrap{max-width:520px}
+.msg-user-bubble{background:#fff;border:1.5px solid #e0e0ec;border-radius:18px 18px 4px 18px;padding:12px 18px;font-size:14px;color:#1a1a2e;line-height:1.6;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.msg-user-time{font-size:11px;color:#b0b0c4;text-align:right;margin-top:5px}
+.msg-agent{animation:fadeUp .22s ease;max-width:760px}
+.msg-skill-tag{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#4b4b6b;margin-bottom:10px}
+.msg-skill-icon{width:20px;height:20px;border-radius:4px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.msg-skill-icon svg{width:11px;height:11px;color:#fff}
+.msg-disclaimer-top{font-size:12px;font-style:italic;font-weight:600;color:#4b4b6b;border-left:3px solid #c4b5fd;padding-left:10px;margin-bottom:12px;line-height:1.5}
+.msg-body{font-size:14px;color:#1a1a2e;line-height:1.8}
+.msg-disclaimer-bot{font-size:11px;color:#9090a8;font-style:italic;margin-top:12px;border-left:2px solid #e2e2ec;padding-left:8px;line-height:1.55}
+.msg-actions{display:flex;gap:16px;margin-top:12px}
+.msg-act{background:none;border:none;color:#c4c4d8;cursor:pointer;font-size:16px;padding:0;line-height:1;transition:color .15s}
+.msg-act:hover{color:#7c3aed}
+.msg-agent-time{font-size:11px;color:#b0b0c4;margin-top:6px}
+.chat-thinking-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px 0;animation:fadeUp .25s ease}
+.bot-svg-wrap{animation:botBounce 2.2s ease-in-out infinite}
+.thinking-label{font-size:13px;color:#9090a8;font-weight:500}
+.tool-use-row{display:flex;align-items:center;gap:8px;padding:6px 13px;background:#faf8ff;border-radius:20px;border:1px solid #ede9fe;font-size:12px;color:#7c3aed;width:fit-content;animation:fadeUp .18s ease}
 .tool-use-row .tu-spin{display:inline-block;width:11px;height:11px;border:1.5px solid rgba(124,58,237,.3);border-top-color:#7c3aed;border-radius:50%;animation:spin .75s linear infinite;flex-shrink:0}
 .tool-use-row.tu-done{background:#f0fdf4;border-color:#bbf7d0;color:#065f46}
-.tu-check{color:#16a34a;font-size:12px;font-weight:700}
-.chat-chips{display:flex;flex-wrap:wrap;gap:7px;padding:2px 0 2px 37px;animation:fadeUp .2s ease}
-.chat-chip{background:#fff;border:1.5px solid #c4b5fd;color:#7c3aed;border-radius:20px;padding:5px 13px;font-size:11.5px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
-.chat-chip:hover{background:#7c3aed;color:#fff;border-color:#7c3aed;transform:translateY(-1px)}
-.chat-input-row{padding:12px 14px;border-top:1.5px solid #e2e2ec;display:flex;align-items:center;gap:9px;background:#fff;flex-shrink:0}
-#chatInput{flex:1;border:1.5px solid #e2e2ec;border-radius:22px;padding:9px 16px;font-size:13px;outline:none;font-family:inherit;background:#f8f7fc;transition:border-color .15s,box-shadow .15s}
+.tu-check{color:#16a34a;font-size:12px;font-weight:700;flex-shrink:0}
+.followup-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;animation:fadeUp .2s ease}
+.followup-chip{background:#fff;border:1.5px solid #c4b5fd;color:#7c3aed;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.followup-chip:hover{background:#7c3aed;color:#fff;border-color:#7c3aed;transform:translateY(-1px)}
+.chat-bottom{border-top:1.5px solid #f0f0f5;background:#fff;flex-shrink:0}
+.chat-qa{padding:9px 20px 6px}
+.chat-qa-label{font-size:12px;color:#4b4b6b;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:500;user-select:none}
+.chat-qa-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.qa-chip{background:#f5f5fa;border:1.5px solid #e2e2ec;color:#3d3d5c;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.qa-chip:hover{border-color:#7c3aed;color:#7c3aed;background:#faf8ff}
+.chat-input-area{display:flex;align-items:flex-end;gap:10px;padding:10px 20px 8px}
+#chatInput{flex:1;border:1.5px solid #e2e2ec;border-radius:12px;padding:11px 16px;font-size:14px;outline:none;font-family:inherit;resize:none;min-height:46px;max-height:120px;transition:border-color .15s,box-shadow .15s;background:#faf9ff;color:#1a1a2e;line-height:1.5}
 #chatInput:focus{border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(124,58,237,.08)}
-.chat-send-btn{width:36px;height:36px;border-radius:50%;background:#7c3aed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,transform .1s,box-shadow .15s}
+.chat-mic-btn{width:40px;height:40px;border-radius:50%;background:#f5f5fa;border:1.5px solid #e2e2ec;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .15s}
+.chat-mic-btn:hover{border-color:#7c3aed}
+.chat-send-btn{width:40px;height:40px;border-radius:50%;background:#7c3aed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,transform .1s,box-shadow .15s}
 .chat-send-btn:hover{background:#6d28d9;box-shadow:0 4px 12px rgba(124,58,237,.35)}
 .chat-send-btn:active{transform:scale(.9)}
 .chat-send-btn svg{width:16px;height:16px}
+.chat-disclaimer-bar{padding:4px 20px 10px;font-size:11px;color:#a0a0b0;text-align:center}
 </style>
 </head>
 <body>
@@ -458,21 +501,35 @@ input[type=text],textarea,select{transition:border-color .15s,box-shadow .15s}
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-hdr">
-      <div class="chat-hdr-avatar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <div class="chat-hdr-logo">J</div>
+      <span class="chat-hdr-title">Joy (Pharma)</span>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <button class="chat-hdr-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg> Skills ▾</button>
+        <button class="chat-hdr-btn">Disclaimer</button>
+        <button class="chat-hdr-btn" style="font-weight:700;letter-spacing:.02em">US</button>
+        <button class="chat-hdr-close" onclick="closeChatModal()">×</button>
       </div>
-      <div class="chat-hdr-info">
-        <div class="ch-name">Joy (Pharma)</div>
-        <div class="ch-sub"><span class="ch-dot"></span>Online · SuperAgent Studio</div>
-      </div>
-      <button class="chat-hdr-close" onclick="closeChatModal()">×</button>
     </div>
-    <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="Ask Joy anything about your territory, accounts, or calls…" onkeydown="if(event.key==='Enter')sendChatMsg()">
-      <button class="chat-send-btn" onclick="sendChatMsg()" title="Send">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
+    <div class="chat-messages splash-mode" id="chatMessages">
+      <div id="chatSplash"><div class="chat-splash-title"><span style="color:#3b82f6">How</span> <span style="color:#0d9488">can</span> <span style="color:#f59e0b">I</span> <span style="color:#f43f5e">help</span> <span style="color:#8b5cf6">you</span> <span style="color:#1a1a2e">today?</span></div></div>
+    </div>
+    <div class="chat-bottom">
+      <div class="chat-qa">
+        <span class="chat-qa-label" onclick="toggleQA()">Quick Actions <span id="qaArrow" style="font-size:10px">▾</span></span>
+        <div class="chat-qa-chips" id="qaChips">
+          <button class="qa-chip" onclick="handleQAChip('Brief me on Dr. Chen before my 2pm call')">Brief me on Dr. Chen before my 2pm call</button>
+          <button class="qa-chip" onclick="handleQAChip('Who are my uncalled Tier 1 accounts this quarter?')">Who are my uncalled Tier 1 accounts this quarter?</button>
+          <button class="qa-chip" onclick="handleQAChip('How is my territory performing this quarter?')">How is my territory performing this quarter?</button>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <textarea id="chatInput" rows="1" placeholder="Start a conversation here" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"></textarea>
+        <button class="chat-mic-btn" title="Voice input">🎙</button>
+        <button class="chat-send-btn" onclick="sendChatMsg()" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="chat-disclaimer-bar">Responses are based on available documents. Verify the information.</div>
     </div>
   </div>
 </div>
@@ -545,7 +602,7 @@ const TOOLS = [
   {name:'Veeva Vault PromoMats', type:'content', icon:'V',  ic:'#dc2626', ib:'#fef2f2'},
   {name:'ClinicalTrials.gov',    type:'content', icon:'⚕',  ic:'#0369a1', ib:'#e0f2fe'},
   {name:'Snowflake',             type:'data',    icon:'❄',  ic:'#2563eb', ib:'#eff6ff'},
-  {name:'Veeva Key People',      type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
+  {name:'Veeva CRM',      type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
 ];
 
 const MODAL_TOOLS = {
@@ -555,7 +612,7 @@ const MODAL_TOOLS = {
     {name:'ClinicalTrials.gov',icon:'⚕',ic:'#0369a1',ib:'#e0f2fe',desc:'Clinical trial registry and results database',added:true},
   ],
   Data:[{name:'Snowflake',icon:'❄',ic:'#2563eb',ib:'#eff6ff',desc:'Cloud data platform and analytics warehouse',added:true}],
-  CRM:[{name:'Veeva Key People',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP stakeholder mapping and relationship tracking',added:true}],
+  CRM:[{name:'Veeva CRM',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP stakeholder mapping and relationship tracking',added:true}],
   Agents:[],LMS:[],
 };
 
@@ -589,7 +646,7 @@ const TOOL_ACTIONS = {
      sql:`SELECT\n  territory_code,\n  diagnosis_code,\n  COUNT(DISTINCT patient_id)         AS patient_count,\n  ROUND(AVG(age_at_diagnosis), 1)    AS avg_age,\n  COUNT(\n    CASE WHEN currently_treated = TRUE\n    THEN 1 END\n  )                                  AS on_therapy_count,\n  ROUND(\n    COUNT(CASE WHEN currently_treated = TRUE THEN 1 END)\n    / COUNT(DISTINCT patient_id) * 100, 1\n  )                                  AS treatment_rate_pct\nFROM analytics.patient_population\nWHERE diagnosis_code IN ('E11','E11.9','E11.65')\n  AND (:territory_code IS NULL\n       OR territory_code = :territory_code)\nGROUP BY territory_code, diagnosis_code\nORDER BY patient_count DESC`,
      params:[{name:'territory_code',type:'string',required:false,desc:'Filter by territory'}]},
   ],
-  'Veeva Key People': [
+  'Veeva CRM': [
     {id:'get-hcp-profile',        label:'Get HCP Profile',            desc:'Retrieves a full HCP account profile from Veeva CRM including tier, NPI, call targets, and address.',              enabled:true,  type:'soql',
      sql:`SELECT\n  Id,\n  Name,\n  Specialty_vod__c,\n  Account_Tier_vod__c,\n  Annual_Call_Target_vod__c,\n  YTD_Calls_vod__c,\n  Last_Activity_Date,\n  NPI_vod__c,\n  Primary_Address_vod__r.City,\n  Primary_Address_vod__r.State\nFROM Account\nWHERE RecordType.DeveloperName = 'HCP_vod'\n  AND Active_vod__c = TRUE\n  AND (Id = :hcp_id\n    OR Territory_vod__c = :territory_code)\nORDER BY Account_Tier_vod__c ASC, Name`,
      params:[{name:'hcp_id',type:'string',required:false,desc:'Veeva Account ID for a specific HCP'},{name:'territory_code',type:'string',required:false,desc:'Pull all HCPs in this territory'}]},
@@ -610,14 +667,14 @@ const TOOL_ACTIONS = {
 
 const SKILL_TOOLS = {
   0: ['ACTO CMS','Veeva Vault PromoMats'],
-  1: ['Veeva Key People'],
-  2: ['Veeva Key People','Snowflake'],
-  3: ['Veeva Key People'],
-  4: ['Veeva Key People'],
+  1: ['Veeva CRM'],
+  2: ['Veeva CRM','Snowflake'],
+  3: ['Veeva CRM'],
+  4: ['Veeva CRM'],
   5: ['ClinicalTrials.gov','Veeva Vault PromoMats'],
   6: ['ACTO CMS','Veeva Vault PromoMats'],
   7: ['ACTO CMS','Veeva Vault PromoMats'],
-  8: ['Veeva Key People','Snowflake'],
+  8: ['Veeva CRM','Snowflake'],
   9: ['Snowflake'],
 };
 
@@ -695,8 +752,8 @@ function toolIconSpan(name, ib, ic, icon, size, radius) {
   size = size||26; radius = radius||Math.round(size*.25);
   const sf = name==='Snowflake', veeva = name.startsWith('Veeva');
   const imgSize = Math.round(size*.72);
-  if(sf) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e8f5fc;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://logo.clearbit.com/snowflake.com" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='❄'"></span>`;
-  if(veeva) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#fff3ee;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://logo.clearbit.com/veeva.com" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='V'"></span>`;
+  if(sf) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e8f5fc;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://companieslogo.com/img/orig/SNOW-35164165.png?t=1751096598" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='❄'"></span>`;
+  if(veeva) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#fff3ee;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://play-lh.googleusercontent.com/Aahvo0l5f4ZtGjka1wLw3qcXArMJgFPec6EVB6HLBCQP2ivagqrnbSXiEPitr-lRmQ=w480-h960-rw" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='V'"></span>`;
   return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${ib};color:${ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:${Math.round(size*.5)}px;flex-shrink:0">${icon}</span>`;
 }
 
@@ -1095,53 +1152,90 @@ function renderEvalList() {
   </div>`;
 }
 function renderEvalDetail() {
+  const stats = [
+    {lbl:'Total Questions',val:'25',sub:'in this run',icon:'🔢',bg:'#f0f4ff',ic:'#3b82f6'},
+    {lbl:'Avg Score',val:'5.32',sub:'out of 10',icon:'⭐',bg:'#fffbeb',ic:'#d97706'},
+    {lbl:'Avg Relevance',val:'7.04',sub:'out of 10',icon:'🎯',bg:'#f0fdf4',ic:'#16a34a'},
+    {lbl:'Avg Quality',val:'5.76',sub:'out of 10',icon:'✦',bg:'#fdf4ff',ic:'#9333ea'},
+    {lbl:'Avg Response Time',val:'20.6s',sub:'per query',icon:'⏱',bg:'#fff7ed',ic:'#f97316'},
+    {lbl:'Skill Accuracy',val:'0%',sub:'skills matched',icon:'⚠',bg:'#fff1f2',ic:'#e11d48'},
+  ];
+  const verdictOf = r => r.includes('aligns well')||r.includes('excellent')||r.includes('on pace') ? 'acc'
+    : r.includes('fundamentally')||r.includes('critical inaccurac')||r.includes('multiple') ? 'bad' : 'par';
+  const verdictLabel = v => v==='acc'?'Accurate':v==='par'?'Partially Accurate':'Inaccurate';
+  const scores = [3.8, 7.1, 2.6];
   return `
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-    <div class="sec-title">Joy 3</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+    <div>
+      <div style="font-size:20px;font-weight:800;color:#1a1a2e">Joy 3</div>
+      <div style="font-size:12px;color:#a0a0b0;margin-top:2px">Evaluation run · 4/7/2026, 8:58 PM · 25 questions</div>
+    </div>
     <div style="display:flex;align-items:center;gap:8px">
-      <button class="btn-s" style="font-size:12px;padding:6px 10px">↻</button>
+      <button class="btn-s" style="font-size:12px;padding:6px 12px">↻ Re-run</button>
       <span class="status-done">Completed</span>
-      <button class="btn-p" style="font-size:12px">Export</button>
+      <button class="btn-p" style="font-size:12px;padding:6px 14px">↓ Export</button>
     </div>
   </div>
-  <div style="font-size:15px;font-weight:700;margin-bottom:12px">Summary</div>
-  <div class="ev-grid">
-    <div class="ev-card"><div class="ev-lbl">Total Questions</div><div class="ev-val">25</div></div>
-    <div class="ev-card"><div class="ev-lbl">Average Score</div><div class="ev-val">5.32</div></div>
-    <div class="ev-card"><div class="ev-lbl">Avg Relevance</div><div class="ev-val">7.04</div></div>
-    <div class="ev-card"><div class="ev-lbl">Avg Quality</div><div class="ev-val">5.76</div></div>
-    <div class="ev-card"><div class="ev-lbl">Avg Response Time (ms)</div><div class="ev-val">20,584</div></div>
-    <div class="ev-card"><div class="ev-lbl">Skill Accuracy %</div><div class="ev-val">0</div></div>
+
+  <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em">Summary</div>
+  <div class="ev2-stat-grid">
+    ${stats.map(s=>`
+    <div class="ev2-stat">
+      <div class="ev2-icon" style="background:${s.bg};color:${s.ic}">${s.icon}</div>
+      <div class="ev2-val" style="color:${s.ic==='#e11d48'||s.ic==='#f97316'?s.ic:'#1a1a2e'}">${s.val}</div>
+      <div class="ev2-lbl">${s.lbl}</div>
+      <div class="ev2-sub">${s.sub}</div>
+    </div>`).join('')}
   </div>
-  <div class="card" style="padding:14px 16px;margin-bottom:22px">
-    <div style="font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Accuracy Distribution</div>
-    <div style="display:flex;gap:16px;margin-bottom:8px;font-size:12px">
-      <span style="color:#16a34a;font-weight:600">● Accurate (8)</span>
-      <span style="color:#f59e0b;font-weight:600">● Partially Accurate (11)</span>
-      <span style="color:#ef4444;font-weight:600">● Inaccurate (6)</span>
+
+  <div class="ev2-acc">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div style="font-size:13px;font-weight:700;color:#1a1a2e">Accuracy Distribution</div>
+      <div style="font-size:11px;color:#a0a0b0">25 of 25 processed</div>
     </div>
-    <div style="height:8px;border-radius:4px;overflow:hidden;display:flex">
-      <div style="width:32%;background:#16a34a"></div>
-      <div style="width:44%;background:#f59e0b"></div>
-      <div style="width:24%;background:#ef4444"></div>
+    <div class="ev2-acc-bar">
+      <div class="ev2-acc-seg" style="flex:32;background:#16a34a"></div>
+      <div class="ev2-acc-seg" style="flex:44;background:#f59e0b"></div>
+      <div class="ev2-acc-seg" style="flex:24;background:#ef4444"></div>
+    </div>
+    <div style="display:flex;gap:20px;font-size:12px;margin-top:6px">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#16a34a;display:inline-block"></span><strong style="color:#065f46">8</strong><span style="color:#8080a0">Accurate (32%)</span></span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span><strong style="color:#92400e">11</strong><span style="color:#8080a0">Partially Accurate (44%)</span></span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block"></span><strong style="color:#dc2626">6</strong><span style="color:#8080a0">Inaccurate (24%)</span></span>
     </div>
   </div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <div style="font-size:15px;font-weight:700">Questions</div>
-    <div style="font-size:11px;color:#a0a0b0;font-weight:600">25/25 Processed</div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <div style="font-size:13px;font-weight:700;color:#1a1a2e;text-transform:uppercase;letter-spacing:.04em">Questions</div>
+    <div style="font-size:11px;color:#a0a0b0;font-weight:600">Showing 3 of 25</div>
   </div>
-  <div style="overflow-x:auto;border-radius:8px;border:1.5px solid #e2e2ec">
-  <table class="q-tbl">
-    <thead><tr><th style="min-width:150px">Question</th><th style="min-width:150px">Expected Answer</th><th style="min-width:150px">Actual Answer</th><th style="min-width:150px">Evaluation Reasoning</th><th>Expected Skill</th><th>Actual Skill</th></tr></thead>
-    <tbody>${EVAL_Q.map(q=>`<tr>
-      <td><p>${q.q}</p></td>
-      <td><p>${q.e}</p></td>
-      <td><p>${q.a}</p></td>
-      <td><p>${q.r}</p></td>
-      <td><span class="skill-tag">${q.sk}</span></td>
-      <td style="color:#a0a0b0">—</td>
-    </tr>`).join('')}</tbody>
-  </table></div>`;
+  ${EVAL_Q.map((q,i)=>{
+    const v = verdictOf(q.r);
+    return `
+    <div class="ev2-q-card">
+      <div class="ev2-q-hdr" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'':'none'">
+        <div class="ev2-q-num">${i+1}</div>
+        <div class="ev2-q-text">${q.q}</div>
+        <span class="ev2-score-pill">Score ${scores[i]}/10</span>
+        <span class="ev2-verdict ${v}" style="margin-left:8px">${verdictLabel(v)}</span>
+      </div>
+      <div class="ev2-q-body">
+        <div>
+          <div class="ev2-col-hdr"><span style="width:8px;height:8px;border-radius:50%;background:#3b82f6;display:inline-block"></span>Expected Answer</div>
+          <div class="ev2-col-body">${q.e}</div>
+        </div>
+        <div>
+          <div class="ev2-col-hdr"><span style="width:8px;height:8px;border-radius:50%;background:#7c3aed;display:inline-block"></span>Actual Answer</div>
+          <div class="ev2-col-body">${q.a}</div>
+        </div>
+        <div class="ev2-reasoning">
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#7c3aed;display:block;margin-bottom:5px">Evaluation Reasoning</span>
+          ${q.r}
+          <div style="margin-top:8px;font-size:11px;color:#8080a0">Expected Skill: <strong style="color:#4b4b6b">${q.sk}</strong></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}`;
 }
 
 // ── Experience ───────────────────────────────────────
@@ -1387,22 +1481,26 @@ function closeActPanel(){
 }
 
 // ── Test Agent / Chat ─────────────────────────────────
+const BOT_SVG = `<svg viewBox="0 0 80 100" width="88" height="110" xmlns="http://www.w3.org/2000/svg"><line x1="40" y1="4" x2="40" y2="15" stroke="#6d28d9" stroke-width="2.5" stroke-linecap="round"/><circle cx="40" cy="3" r="4" fill="#7c3aed"/><rect x="12" y="15" width="56" height="42" rx="16" fill="#2d2d42"/><rect x="18" y="24" width="44" height="18" rx="9" fill="#f0f0f8"/><circle cx="33" cy="33" r="6" fill="#1a1a2e"/><circle cx="47" cy="33" r="6" fill="#1a1a2e"/><circle cx="34.5" cy="31.5" r="2.2" fill="#fff"/><circle cx="48.5" cy="31.5" r="2.2" fill="#fff"/><path d="M32 45 Q40 52 48 45" stroke="#5b5b7b" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="8" y="60" width="64" height="34" rx="12" fill="#7c3aed"/><rect x="20" y="67" width="40" height="18" rx="5" fill="rgba(255,255,255,.18)"/><circle cx="28" cy="76" r="2.5" fill="#4ade80"/><circle cx="40" cy="76" r="2.5" fill="#a78bfa"/><circle cx="52" cy="76" r="2.5" fill="#60a5fa"/><rect x="0" y="61" width="7" height="24" rx="3.5" fill="#6d28d9"/><rect x="73" y="61" width="7" height="24" rx="3.5" fill="#6d28d9"/><rect x="15" y="91" width="16" height="9" rx="4" fill="#6d28d9"/><rect x="49" y="91" width="16" height="9" rx="4" fill="#6d28d9"/></svg>`;
+
 const CHAT_SCENARIOS = [
   {
     triggers:['brief','chen','2pm','call prep','pre-call','precall','before my','prepare for'],
     tools:[
-      {name:'Veeva Key People',action:'Get HCP Profile',dur:900},
-      {name:'Veeva Key People',action:'Get Call History',dur:700},
+      {name:'Veeva CRM',action:'Get HCP Profile',dur:900},
+      {name:'Veeva CRM',action:'Get Call History',dur:700},
     ],
+    skill:'Joy - Pre-Call 360 Account Prep',
     response:`Dr. Sarah Chen is a Tier 1 endocrinologist at Westlake Medical Center in Austin, TX. She has written 47 Metformin scripts YTD — up 12% from last year — and sits at 71% of her annual call target with 3 of 4 cycle calls completed.\n\nYour last call was three weeks ago. You discussed HbA1c reduction data and left a PromoMats piece on the cardiovascular outcomes trial. Her noted next objective was to revisit reimbursement support options for self-pay patients.\n\nFor today: open with the formulary update — Metformin moved to Tier 2 on BlueCross Advantage as of Q2. That directly addresses her primary prescribing hesitation. She's also enrolled in the speaker bureau but hasn't presented in six months — a natural ask before you wrap.`,
     chips:['Log this call after','Pull her latest Rx trend','Get me an objection handler'],
   },
   {
     triggers:['tier 1','not called','this quarter','haven\'t called','uncalled','missed','zero calls'],
     tools:[
-      {name:'Veeva Key People',action:'Search HCPs by Territory',dur:1100},
+      {name:'Veeva CRM',action:'Search HCPs by Territory',dur:1100},
       {name:'Snowflake',action:'Query Territory Performance',dur:900},
     ],
+    skill:'Joy - Annual Account Cycle Planning (CRM)',
     response:`Three Tier 1 accounts in TX-NW-01 have zero calls logged this quarter.\n\nDr. James Okonkwo at Peachtree Family Health — 8-call annual target, last contacted in November. He wrote 62 scripts last year and has strong formulary access across all three major payers in the territory.\n\nDr. Priya Nair at Summit Endocrinology Group — 6-call target, previously engaged on speaker bureau. Prescribing is flat YoY but she sees high-volume newly-diagnosed T2D patients, a significant near-term opportunity.\n\nDr. Marcus Webb at Austin Diabetes & Endocrine — your highest-potential untouched account. 91 scripts last year, Tier 1 designation renewed last cycle. His admin noted he prefers Tuesday afternoon appointments.\n\nI'd prioritize Webb first given volume, then Okonkwo for the formulary coverage story.`,
     chips:['Schedule Dr. Webb for Tuesday','Brief me on Dr. Okonkwo','What\'s my Q2 goal attainment?'],
   },
@@ -1412,6 +1510,7 @@ const CHAT_SCENARIOS = [
       {name:'ACTO CMS',action:'Find Resource',dur:700},
       {name:'Veeva Vault PromoMats',action:'Search Approved Content',dur:600},
     ],
+    skill:'Joy - Objection Handling and Coaching',
     response:`For the formulary access objection, lead with the current coverage picture rather than defending access gaps.\n\nOpen with: "I want to make sure your patients aren't hitting barriers at the pharmacy. Metformin is now covered at Tier 2 on BlueCross Advantage and Tier 1 on Aetna Commercial — which represents about 68% of your patient panel based on payer mix data."\n\nIf they push on out-of-pocket cost: "For patients with high cost-share, our Bridge Program covers up to 12 months of co-pay assistance with no income threshold for commercially insured patients. Enrollment takes under two minutes at the point of care."\n\nIf they raise prior authorization: "PA requirements only apply on UnitedHealthcare Community Plan for patients with an A1c below 7.5. For everyone above that threshold — which is most newly initiated patients — no PA is required."\n\nAvoid making binding coverage guarantees. Always verify against the current formulary database before the call.`,
     chips:['Pull current payer mix data','Bridge Program enrollment details','UHC PA criteria full text'],
   },
@@ -1421,6 +1520,7 @@ const CHAT_SCENARIOS = [
       {name:'Snowflake',action:'Query Territory Performance',dur:1200},
       {name:'Snowflake',action:'Query Prescribing Trends',dur:950},
     ],
+    skill:'Joy - Komodo Health Rx: Territory Insights',
     response:`Your territory is at 84.3% of Q2 Metformin goal with three weeks remaining. You need 218 additional scripts to hit target — achievable but tight.\n\nThe bright spot: total Rx volume is up 9.4% quarter-over-quarter, driven primarily by Dr. Chen (+22 scripts) and Dr. Patel (+31 scripts). Both are trending toward exceeding their annual call targets.\n\nThe gap: your Tier 2 accounts are underperforming collectively at 61% of goal, and three of those accounts haven't been called in over 45 days. Reallocating two additional visits into that tier this week could meaningfully move the number before close.\n\nMarket share in TX-NW-01 is 23.7% — up from 21.2% last quarter but still below the regional average of 26.1%. The delta is concentrated in the Westside zip codes where a competitor has stronger formulary positioning on one regional PPO.`,
     chips:['Who are the underperforming Tier 2 accounts?','Compare me to regional peers','Help me plan this week to hit goal'],
   },
@@ -1428,12 +1528,14 @@ const CHAT_SCENARIOS = [
 
 const FALLBACK_SCENARIO = {
   tools:[{name:'ACTO CMS',action:'Find Resource',dur:750}],
+  skill:'Joy - Product Knowledge',
   response:`Based on your territory data and connected CRM, here's what I can tell you. Your current YTD call completion rate is tracking at 78% across all tiers, and three Tier 1 accounts still have open cycle plan objectives. I'd recommend checking in on those before end of quarter to protect your goal attainment.\n\nIf you have a more specific question — a particular account, objection, or data point — I can pull exactly what you need.`,
   chips:['Show my uncalled Tier 1 accounts','Brief me before a call','How is my territory performing?'],
 };
 
 let chatHistory = [];
 let chatBusy = false;
+let qaOpen = true;
 
 function testAgent() {
   const btn = document.getElementById('testBtn');
@@ -1444,11 +1546,10 @@ function testAgent() {
     btn.disabled = false;
     chatHistory = [];
     chatBusy = false;
-    document.getElementById('chatMessages').innerHTML = '';
+    const msgs = document.getElementById('chatMessages');
+    msgs.innerHTML = `<div id="chatSplash"><div class="chat-splash-title"><span style="color:#3b82f6">How</span> <span style="color:#0d9488">can</span> <span style="color:#f59e0b">I</span> <span style="color:#f43f5e">help</span> <span style="color:#8b5cf6">you</span> <span style="color:#1a1a2e">today?</span></div></div>`;
+    msgs.classList.add('splash-mode');
     document.getElementById('chatOverlay').classList.add('open');
-    setTimeout(()=>{
-      _joyGreet();
-    }, 400);
   }, 1100);
 }
 
@@ -1456,41 +1557,58 @@ function closeChatModal() {
   document.getElementById('chatOverlay').classList.remove('open');
 }
 
-function _joyGreet() {
-  const el = _appendJoyBubble();
-  _streamInto(el, `Hi, I'm Joy — your AI field partner. I know your territory, your accounts, and your goals. What can I help you with right now?`, ()=>{
-    _renderChips(['Brief me on Dr. Chen before my 2pm call','Who are my uncalled Tier 1 accounts this quarter?','Give me a formulary objection handler','How is my territory performing this quarter?']);
-  });
+function toggleQA() {
+  qaOpen = !qaOpen;
+  document.getElementById('qaChips').style.display = qaOpen ? '' : 'none';
+  document.getElementById('qaArrow').textContent = qaOpen ? '▾' : '▸';
 }
 
-function _appendJoyBubble() {
-  const msgs = document.getElementById('chatMessages');
-  const wrap = document.createElement('div');
-  wrap.className = 'chat-bubble-joy';
-  wrap.innerHTML = `<div class="joy-bub-av">J</div>`;
-  const inner = document.createElement('div');
-  inner.className = 'cb-joy-inner';
-  wrap.appendChild(inner);
-  msgs.appendChild(wrap);
-  msgs.scrollTop = msgs.scrollHeight;
-  return inner;
+function handleQAChip(text) { _handleSend(text); }
+
+function _clearSplash() {
+  document.getElementById('chatMessages').classList.remove('splash-mode');
+  const s = document.getElementById('chatSplash');
+  if(s) s.remove();
 }
 
-function _appendUserBubble(text) {
+function _appendUserMsg(text) {
   const msgs = document.getElementById('chatMessages');
+  const now = new Date();
+  const ds = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
+  const el = document.createElement('div');
+  el.className = 'msg-user';
+  el.innerHTML = `<div class="msg-user-wrap"><div class="msg-user-bubble">${escHtml(text)}</div><div class="msg-user-time">${ds}</div></div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function _appendAgentMsg(skillName) {
+  const msgs = document.getElementById('chatMessages');
+  const now = new Date();
+  const ds = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
   const wrap = document.createElement('div');
-  wrap.className = 'chat-bubble-user';
-  wrap.innerHTML = `<div class="cb-user-inner">${escHtml(text)}</div>`;
+  wrap.className = 'msg-agent';
+  const starIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+  const hdr = document.createElement('div');
+  hdr.innerHTML = `<div class="msg-skill-tag"><span class="msg-skill-icon">${starIcon}</span>${skillName}</div><div class="msg-disclaimer-top">This response is generated by JOY, an AI-powered assistant operating in demo mode with simulated data.</div>`;
+  wrap.appendChild(hdr);
+  const body = document.createElement('div');
+  body.className = 'msg-body';
+  wrap.appendChild(body);
+  const ftr = document.createElement('div');
+  ftr.innerHTML = `<div class="msg-disclaimer-bot">JOY is a demo assistant. All data shown is fictional. Verify all clinical claims, compliance guidance, and territory data against approved sources before use in the field.</div><div class="msg-actions"><button class="msg-act" title="Helpful">👍</button><button class="msg-act" title="Not helpful">👎</button><button class="msg-act" title="Pin">📌</button><button class="msg-act" title="Copy" onclick="navigator.clipboard&&navigator.clipboard.writeText(this.closest('.msg-agent').querySelector('.msg-body').innerText).then(()=>showToast('Copied ✓'))">📋</button></div><div class="msg-agent-time">${ds}</div>`;
+  wrap.appendChild(ftr);
   msgs.appendChild(wrap);
   msgs.scrollTop = msgs.scrollHeight;
+  return body;
 }
 
 function _showThinking() {
   const msgs = document.getElementById('chatMessages');
   const el = document.createElement('div');
   el.id = 'chatThink';
-  el.className = 'chat-thinking';
-  el.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+  el.className = 'chat-thinking-wrap';
+  el.innerHTML = `<div class="bot-svg-wrap">${BOT_SVG}</div><div class="thinking-label">Joy is searching across trusted sources…</div>`;
   msgs.appendChild(el);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -1533,20 +1651,20 @@ function _streamInto(el, text, onDone) {
   tick();
 }
 
-function _renderChips(chips) {
-  const old = document.getElementById('chatChips');
+function _renderFollowupChips(chips) {
+  const old = document.getElementById('followupChips');
   if(old) old.remove();
   const msgs = document.getElementById('chatMessages');
   const row = document.createElement('div');
-  row.id = 'chatChips';
-  row.className = 'chat-chips';
-  row.innerHTML = chips.map(c=>`<button class="chat-chip" onclick="sendChatChip(this,'${c.replace(/'/g,'\\'+'\'')}')">${c}</button>`).join('');
+  row.id = 'followupChips';
+  row.className = 'followup-chips';
+  row.innerHTML = chips.map(c=>`<button class="followup-chip" onclick="sendFollowupChip('${c.replace(/'/g,'&#39;')}')">${c}</button>`).join('');
   msgs.appendChild(row);
   msgs.scrollTop = 9999;
 }
 
-function sendChatChip(btn, text) {
-  const row = document.getElementById('chatChips');
+function sendFollowupChip(text) {
+  const row = document.getElementById('followupChips');
   if(row) row.remove();
   _handleSend(text);
 }
@@ -1556,34 +1674,34 @@ function sendChatMsg() {
   const text = inp.value.trim();
   if(!text || chatBusy) return;
   inp.value = '';
-  const row = document.getElementById('chatChips');
-  if(row) row.remove();
+  inp.style.height = '';
   _handleSend(text);
 }
 
 function _handleSend(text) {
   if(chatBusy) return;
   chatBusy = true;
-  _appendUserBubble(text);
+  _clearSplash();
+  _appendUserMsg(text);
+  const old = document.getElementById('followupChips');
+  if(old) old.remove();
   const lower = text.toLowerCase();
   const sc = CHAT_SCENARIOS.find(s=>s.triggers.some(t=>lower.includes(t))) || FALLBACK_SCENARIO;
   _showThinking();
-  let delay = 700;
-  const badgeIds = [];
+  let delay = 600;
   sc.tools.forEach((tool, idx)=>{
     setTimeout(()=>{
       if(idx===0) _hideThinking();
       const bid = _showToolBadge(tool.name, tool.action);
-      badgeIds.push({bid, tool});
       setTimeout(()=>_resolveToolBadge(bid, tool.name, tool.action), tool.dur);
-    }, delay + idx*460);
+    }, delay + idx*480);
   });
-  const totalWait = delay + sc.tools.length*460 + Math.max(...sc.tools.map(t=>t.dur)) + 280;
+  const totalWait = delay + sc.tools.length*480 + Math.max(...sc.tools.map(t=>t.dur)) + 300;
   setTimeout(()=>{
-    const el = _appendJoyBubble();
+    const el = _appendAgentMsg(sc.skill);
     _streamInto(el, sc.response, ()=>{
       chatBusy = false;
-      _renderChips(sc.chips);
+      _renderFollowupChips(sc.chips);
     });
   }, totalWait);
 }
@@ -1616,6 +1734,10 @@ function closePanel(){document.getElementById('resPanel').classList.remove('open
 renderNav();
 renderPage();
 renderFooter();
+document.addEventListener('DOMContentLoaded',()=>{
+  const ta = document.getElementById('chatInput');
+  if(ta) ta.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';});
+});
 </script>
 </body>
 </html>
