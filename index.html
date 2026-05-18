@@ -303,6 +303,46 @@ input[type=text],textarea,select{transition:border-color .15s,box-shadow .15s}
 .act-type.sql{background:#dbeafe;color:#1d4ed8}
 .act-type.soql{background:#d1fae5;color:#065f46}
 .act-type.api{background:#fef3c7;color:#92400e}
+
+/* ── Chat Modal ─────────────────────────────────────── */
+.chat-overlay{position:fixed;inset:0;background:rgba(10,10,30,.52);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.chat-overlay.open{opacity:1;pointer-events:all}
+.chat-modal{width:580px;height:700px;background:#fff;border-radius:16px;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.22);overflow:hidden;transform:translateY(28px) scale(.96);transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s;opacity:0}
+.chat-overlay.open .chat-modal{transform:translateY(0) scale(1);opacity:1}
+.chat-hdr{padding:15px 20px;background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.chat-hdr-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid rgba(255,255,255,.35)}
+.chat-hdr-avatar svg{width:18px;height:18px;color:#fff}
+.chat-hdr-info{flex:1}
+.chat-hdr-info .ch-name{font-size:15px;font-weight:700;color:#fff}
+.chat-hdr-info .ch-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:1px;display:flex;align-items:center;gap:5px}
+.ch-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block}
+.chat-hdr-close{background:rgba(255,255,255,.15);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;color:#fff;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .15s;padding:0}
+.chat-hdr-close:hover{background:rgba(255,255,255,.28)}
+.chat-messages{flex:1;overflow-y:auto;padding:18px 18px 8px;display:flex;flex-direction:column;gap:12px;background:#f8f7fc}
+.chat-bubble-joy{display:flex;align-items:flex-start;gap:9px;animation:fadeUp .2s ease}
+.joy-bub-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;margin-top:1px}
+.cb-joy-inner{background:#fff;border:1.5px solid #e2e2ec;border-radius:3px 12px 12px 12px;padding:11px 14px;font-size:13px;color:#1a1a2e;line-height:1.7;max-width:450px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.chat-bubble-user{display:flex;justify-content:flex-end;animation:fadeUp .2s ease}
+.cb-user-inner{background:#7c3aed;color:#fff;border-radius:12px 12px 3px 12px;padding:10px 14px;font-size:13px;line-height:1.55;max-width:370px;font-weight:500}
+.chat-thinking{display:flex;align-items:center;gap:5px;padding:10px 14px;background:#fff;border:1.5px solid #e2e2ec;border-radius:3px 12px 12px 12px;width:fit-content;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-left:37px}
+@keyframes tcBounce{0%,100%{transform:translateY(0);opacity:.5}45%{transform:translateY(-5px);opacity:1}}
+.chat-thinking .dot{width:7px;height:7px;border-radius:50%;background:#c4b5fd;animation:tcBounce .95s ease-in-out infinite}
+.chat-thinking .dot:nth-child(2){animation-delay:.16s}
+.chat-thinking .dot:nth-child(3){animation-delay:.32s}
+.tool-use-row{display:flex;align-items:center;gap:8px;padding:6px 11px;background:#faf8ff;border-radius:20px;border:1px solid #ede9fe;font-size:11px;color:#7c3aed;margin-left:37px;width:fit-content;animation:fadeUp .18s ease}
+.tool-use-row .tu-spin{display:inline-block;width:11px;height:11px;border:1.5px solid rgba(124,58,237,.3);border-top-color:#7c3aed;border-radius:50%;animation:spin .75s linear infinite;flex-shrink:0}
+.tool-use-row.tu-done{background:#f0fdf4;border-color:#bbf7d0;color:#065f46}
+.tu-check{color:#16a34a;font-size:12px;font-weight:700}
+.chat-chips{display:flex;flex-wrap:wrap;gap:7px;padding:2px 0 2px 37px;animation:fadeUp .2s ease}
+.chat-chip{background:#fff;border:1.5px solid #c4b5fd;color:#7c3aed;border-radius:20px;padding:5px 13px;font-size:11.5px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.chat-chip:hover{background:#7c3aed;color:#fff;border-color:#7c3aed;transform:translateY(-1px)}
+.chat-input-row{padding:12px 14px;border-top:1.5px solid #e2e2ec;display:flex;align-items:center;gap:9px;background:#fff;flex-shrink:0}
+#chatInput{flex:1;border:1.5px solid #e2e2ec;border-radius:22px;padding:9px 16px;font-size:13px;outline:none;font-family:inherit;background:#f8f7fc;transition:border-color .15s,box-shadow .15s}
+#chatInput:focus{border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(124,58,237,.08)}
+.chat-send-btn{width:36px;height:36px;border-radius:50%;background:#7c3aed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,transform .1s,box-shadow .15s}
+.chat-send-btn:hover{background:#6d28d9;box-shadow:0 4px 12px rgba(124,58,237,.35)}
+.chat-send-btn:active{transform:scale(.9)}
+.chat-send-btn svg{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -412,6 +452,29 @@ input[type=text],textarea,select{transition:border-color .15s,box-shadow .15s}
     <button class="m-close" onclick="closeActPanel()">×</button>
   </div>
   <div class="sp-body" id="actPanelBody"></div>
+</div>
+
+<!-- Chat Modal -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-modal">
+    <div class="chat-hdr">
+      <div class="chat-hdr-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+      <div class="chat-hdr-info">
+        <div class="ch-name">Joy (Pharma)</div>
+        <div class="ch-sub"><span class="ch-dot"></span>Online · SuperAgent Studio</div>
+      </div>
+      <button class="chat-hdr-close" onclick="closeChatModal()">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Ask Joy anything about your territory, accounts, or calls…" onkeydown="if(event.key==='Enter')sendChatMsg()">
+      <button class="chat-send-btn" onclick="sendChatMsg()" title="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- Resources Slide Panel -->
@@ -1323,7 +1386,55 @@ function closeActPanel(){
   currentAction = null;
 }
 
-// ── Test Agent ───────────────────────────────────────
+// ── Test Agent / Chat ─────────────────────────────────
+const CHAT_SCENARIOS = [
+  {
+    triggers:['brief','chen','2pm','call prep','pre-call','precall','before my','prepare for'],
+    tools:[
+      {name:'Veeva Key People',action:'Get HCP Profile',dur:900},
+      {name:'Veeva Key People',action:'Get Call History',dur:700},
+    ],
+    response:`Dr. Sarah Chen is a Tier 1 endocrinologist at Westlake Medical Center in Austin, TX. She has written 47 Metformin scripts YTD — up 12% from last year — and sits at 71% of her annual call target with 3 of 4 cycle calls completed.\n\nYour last call was three weeks ago. You discussed HbA1c reduction data and left a PromoMats piece on the cardiovascular outcomes trial. Her noted next objective was to revisit reimbursement support options for self-pay patients.\n\nFor today: open with the formulary update — Metformin moved to Tier 2 on BlueCross Advantage as of Q2. That directly addresses her primary prescribing hesitation. She's also enrolled in the speaker bureau but hasn't presented in six months — a natural ask before you wrap.`,
+    chips:['Log this call after','Pull her latest Rx trend','Get me an objection handler'],
+  },
+  {
+    triggers:['tier 1','not called','this quarter','haven\'t called','uncalled','missed','zero calls'],
+    tools:[
+      {name:'Veeva Key People',action:'Search HCPs by Territory',dur:1100},
+      {name:'Snowflake',action:'Query Territory Performance',dur:900},
+    ],
+    response:`Three Tier 1 accounts in TX-NW-01 have zero calls logged this quarter.\n\nDr. James Okonkwo at Peachtree Family Health — 8-call annual target, last contacted in November. He wrote 62 scripts last year and has strong formulary access across all three major payers in the territory.\n\nDr. Priya Nair at Summit Endocrinology Group — 6-call target, previously engaged on speaker bureau. Prescribing is flat YoY but she sees high-volume newly-diagnosed T2D patients, a significant near-term opportunity.\n\nDr. Marcus Webb at Austin Diabetes & Endocrine — your highest-potential untouched account. 91 scripts last year, Tier 1 designation renewed last cycle. His admin noted he prefers Tuesday afternoon appointments.\n\nI'd prioritize Webb first given volume, then Okonkwo for the formulary coverage story.`,
+    chips:['Schedule Dr. Webb for Tuesday','Brief me on Dr. Okonkwo','What\'s my Q2 goal attainment?'],
+  },
+  {
+    triggers:['objection','formulary','coverage','access','reimbursement','payer','copay','prior auth','pa '],
+    tools:[
+      {name:'ACTO CMS',action:'Find Resource',dur:700},
+      {name:'Veeva Vault PromoMats',action:'Search Approved Content',dur:600},
+    ],
+    response:`For the formulary access objection, lead with the current coverage picture rather than defending access gaps.\n\nOpen with: "I want to make sure your patients aren't hitting barriers at the pharmacy. Metformin is now covered at Tier 2 on BlueCross Advantage and Tier 1 on Aetna Commercial — which represents about 68% of your patient panel based on payer mix data."\n\nIf they push on out-of-pocket cost: "For patients with high cost-share, our Bridge Program covers up to 12 months of co-pay assistance with no income threshold for commercially insured patients. Enrollment takes under two minutes at the point of care."\n\nIf they raise prior authorization: "PA requirements only apply on UnitedHealthcare Community Plan for patients with an A1c below 7.5. For everyone above that threshold — which is most newly initiated patients — no PA is required."\n\nAvoid making binding coverage guarantees. Always verify against the current formulary database before the call.`,
+    chips:['Pull current payer mix data','Bridge Program enrollment details','UHC PA criteria full text'],
+  },
+  {
+    triggers:['rx trend','prescribing','territory','quota','attainment','goal','how am i','performance','q2','quarter','metrics'],
+    tools:[
+      {name:'Snowflake',action:'Query Territory Performance',dur:1200},
+      {name:'Snowflake',action:'Query Prescribing Trends',dur:950},
+    ],
+    response:`Your territory is at 84.3% of Q2 Metformin goal with three weeks remaining. You need 218 additional scripts to hit target — achievable but tight.\n\nThe bright spot: total Rx volume is up 9.4% quarter-over-quarter, driven primarily by Dr. Chen (+22 scripts) and Dr. Patel (+31 scripts). Both are trending toward exceeding their annual call targets.\n\nThe gap: your Tier 2 accounts are underperforming collectively at 61% of goal, and three of those accounts haven't been called in over 45 days. Reallocating two additional visits into that tier this week could meaningfully move the number before close.\n\nMarket share in TX-NW-01 is 23.7% — up from 21.2% last quarter but still below the regional average of 26.1%. The delta is concentrated in the Westside zip codes where a competitor has stronger formulary positioning on one regional PPO.`,
+    chips:['Who are the underperforming Tier 2 accounts?','Compare me to regional peers','Help me plan this week to hit goal'],
+  },
+];
+
+const FALLBACK_SCENARIO = {
+  tools:[{name:'ACTO CMS',action:'Find Resource',dur:750}],
+  response:`Based on your territory data and connected CRM, here's what I can tell you. Your current YTD call completion rate is tracking at 78% across all tiers, and three Tier 1 accounts still have open cycle plan objectives. I'd recommend checking in on those before end of quarter to protect your goal attainment.\n\nIf you have a more specific question — a particular account, objection, or data point — I can pull exactly what you need.`,
+  chips:['Show my uncalled Tier 1 accounts','Brief me before a call','How is my territory performing?'],
+};
+
+let chatHistory = [];
+let chatBusy = false;
+
 function testAgent() {
   const btn = document.getElementById('testBtn');
   btn.innerHTML = '<span class="btn-spin"></span>Connecting…';
@@ -1331,8 +1442,150 @@ function testAgent() {
   setTimeout(()=>{
     btn.innerHTML = 'Test Agent';
     btn.disabled = false;
-    showToast('Joy is ready — chat window launching soon');
-  }, 2200);
+    chatHistory = [];
+    chatBusy = false;
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('chatOverlay').classList.add('open');
+    setTimeout(()=>{
+      _joyGreet();
+    }, 400);
+  }, 1100);
+}
+
+function closeChatModal() {
+  document.getElementById('chatOverlay').classList.remove('open');
+}
+
+function _joyGreet() {
+  const el = _appendJoyBubble();
+  _streamInto(el, `Hi, I'm Joy — your AI field partner. I know your territory, your accounts, and your goals. What can I help you with right now?`, ()=>{
+    _renderChips(['Brief me on Dr. Chen before my 2pm call','Who are my uncalled Tier 1 accounts this quarter?','Give me a formulary objection handler','How is my territory performing this quarter?']);
+  });
+}
+
+function _appendJoyBubble() {
+  const msgs = document.getElementById('chatMessages');
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-joy';
+  wrap.innerHTML = `<div class="joy-bub-av">J</div>`;
+  const inner = document.createElement('div');
+  inner.className = 'cb-joy-inner';
+  wrap.appendChild(inner);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+  return inner;
+}
+
+function _appendUserBubble(text) {
+  const msgs = document.getElementById('chatMessages');
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-user';
+  wrap.innerHTML = `<div class="cb-user-inner">${escHtml(text)}</div>`;
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function _showThinking() {
+  const msgs = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.id = 'chatThink';
+  el.className = 'chat-thinking';
+  el.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function _hideThinking() {
+  const el = document.getElementById('chatThink');
+  if(el) el.remove();
+}
+
+function _showToolBadge(toolName, action) {
+  const msgs = document.getElementById('chatMessages');
+  const id = 'tu_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+  const el = document.createElement('div');
+  el.id = id;
+  el.className = 'tool-use-row';
+  el.innerHTML = `<span class="tu-spin"></span><span>Querying <strong>${toolName}</strong> — ${action}…</span>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return id;
+}
+
+function _resolveToolBadge(id, toolName, action) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.add('tu-done');
+  el.innerHTML = `<span class="tu-check">✓</span><span><strong>${toolName}</strong> · ${action}</span>`;
+}
+
+function _streamInto(el, text, onDone) {
+  let i = 0;
+  function tick() {
+    if(i >= text.length){ if(onDone) onDone(); return; }
+    i++;
+    el.innerHTML = escHtml(text.slice(0,i)).replace(/\n/g,'<br>');
+    document.getElementById('chatMessages').scrollTop = 9999;
+    const ch = text[i-1];
+    const delay = (ch==='\n'||ch==='.'||ch===','||ch==='?'||ch==='!')?36:11;
+    setTimeout(tick, delay);
+  }
+  tick();
+}
+
+function _renderChips(chips) {
+  const old = document.getElementById('chatChips');
+  if(old) old.remove();
+  const msgs = document.getElementById('chatMessages');
+  const row = document.createElement('div');
+  row.id = 'chatChips';
+  row.className = 'chat-chips';
+  row.innerHTML = chips.map(c=>`<button class="chat-chip" onclick="sendChatChip(this,'${c.replace(/'/g,'\\'+'\'')}')">${c}</button>`).join('');
+  msgs.appendChild(row);
+  msgs.scrollTop = 9999;
+}
+
+function sendChatChip(btn, text) {
+  const row = document.getElementById('chatChips');
+  if(row) row.remove();
+  _handleSend(text);
+}
+
+function sendChatMsg() {
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if(!text || chatBusy) return;
+  inp.value = '';
+  const row = document.getElementById('chatChips');
+  if(row) row.remove();
+  _handleSend(text);
+}
+
+function _handleSend(text) {
+  if(chatBusy) return;
+  chatBusy = true;
+  _appendUserBubble(text);
+  const lower = text.toLowerCase();
+  const sc = CHAT_SCENARIOS.find(s=>s.triggers.some(t=>lower.includes(t))) || FALLBACK_SCENARIO;
+  _showThinking();
+  let delay = 700;
+  const badgeIds = [];
+  sc.tools.forEach((tool, idx)=>{
+    setTimeout(()=>{
+      if(idx===0) _hideThinking();
+      const bid = _showToolBadge(tool.name, tool.action);
+      badgeIds.push({bid, tool});
+      setTimeout(()=>_resolveToolBadge(bid, tool.name, tool.action), tool.dur);
+    }, delay + idx*460);
+  });
+  const totalWait = delay + sc.tools.length*460 + Math.max(...sc.tools.map(t=>t.dur)) + 280;
+  setTimeout(()=>{
+    const el = _appendJoyBubble();
+    _streamInto(el, sc.response, ()=>{
+      chatBusy = false;
+      _renderChips(sc.chips);
+    });
+  }, totalWait);
 }
 
 // ── Modal ────────────────────────────────────────────
@@ -1353,6 +1606,7 @@ function switchMTab(t,el){
     </div>`).join('');
 }
 document.getElementById('toolModal').addEventListener('click',e=>{if(e.target===document.getElementById('toolModal'))closeModal();});
+document.getElementById('chatOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('chatOverlay'))closeChatModal();});
 
 // ── Slide panel ──────────────────────────────────────
 function openPanel(){document.getElementById('resPanel').classList.add('open');}
