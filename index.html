@@ -701,7 +701,7 @@ const SKILL_TOOLS = {
 };
 
 const SKILLS = [
-  'Product Knowledge',
+  'Joy - Product Knowledge',
   'JOY - Account Onboarding & Potential Assessment (CRM)',
   'JOY - Annual Account Cycle Planning & Target Management (CRM)',
   'JOY - Call Scheduling & Route Optimization (CRM)',
@@ -991,7 +991,6 @@ function renderSkillsList() {
             <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px">
               <button style="background:none;border:none;color:#c0c0d0;cursor:pointer;font-size:16px;padding:2px" onclick="event.stopPropagation()" title="Settings">⚙</button>
               <button class="btn-rm" onclick="event.stopPropagation()">Remove</button>
-              ${i>0?`<button style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:16px;padding:2px" onclick="event.stopPropagation()">🗑</button>`:''}
             </div>
           </td>
         </tr>`).join('')}
