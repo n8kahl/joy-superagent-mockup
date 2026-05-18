@@ -602,11 +602,9 @@ const TOOLS = [
   {name:'Veeva Vault PromoMats', type:'content', icon:'V',  ic:'#dc2626', ib:'#fef2f2'},
   {name:'ClinicalTrials.gov',    type:'content', icon:'⚕',  ic:'#0369a1', ib:'#e0f2fe'},
   {name:'Snowflake',             type:'data',    icon:'❄',  ic:'#2563eb', ib:'#eff6ff'},
-  {name:'Veeva Key People',      type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
   {name:'Veeva CRM',             type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
   {name:'ACTO Learning',         type:'lms',     icon:'▶',  ic:'#7c3aed', ib:'#f5f3ff'},
   {name:'ACTO Coaching Data',    type:'lms',     icon:'◈',  ic:'#db2777', ib:'#fdf2f8'},
-  {name:'CxZone',                type:'lms',     icon:'Cx', ic:'#1d4ed8', ib:'#eff6ff'},
 ];
 
 const MODAL_TOOLS = {
@@ -617,14 +615,12 @@ const MODAL_TOOLS = {
   ],
   Data:[{name:'Snowflake',icon:'❄',ic:'#2563eb',ib:'#eff6ff',desc:'Cloud data platform and analytics warehouse',added:true}],
   CRM:[
-    {name:'Veeva Key People',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP profile lookup and territory stakeholder mapping',added:true},
-    {name:'Veeva CRM',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP relationship tracking, call history, and account planning',added:true},
+    {name:'Veeva CRM',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP profiles, key people lookup, call history, and account planning',added:true},
   ],
   Agents:[],
   LMS:[
     {name:'ACTO Learning',icon:'▶',ic:'#7c3aed',ib:'#f5f3ff',desc:'Rep quiz scores and ACTION pack completion tracking',added:true},
-    {name:'ACTO Coaching Data',icon:'◈',ic:'#db2777',ib:'#fdf2f8',desc:'Field coaching reports and manager observation data',added:true},
-    {name:'CxZone',icon:'Cx',ic:'#1d4ed8',ib:'#eff6ff',desc:'Role-play scenario completions, AI feedback, and coaching assessments',added:true},
+    {name:'ACTO Coaching Data',icon:'◈',ic:'#db2777',ib:'#fdf2f8',desc:'Field coaching reports and CxZone role-play scenario data',added:true},
   ],
 };
 
@@ -658,15 +654,13 @@ const TOOL_ACTIONS = {
      sql:`SELECT\n  territory_code,\n  diagnosis_code,\n  COUNT(DISTINCT patient_id)         AS patient_count,\n  ROUND(AVG(age_at_diagnosis), 1)    AS avg_age,\n  COUNT(\n    CASE WHEN currently_treated = TRUE\n    THEN 1 END\n  )                                  AS on_therapy_count,\n  ROUND(\n    COUNT(CASE WHEN currently_treated = TRUE THEN 1 END)\n    / COUNT(DISTINCT patient_id) * 100, 1\n  )                                  AS treatment_rate_pct\nFROM analytics.patient_population\nWHERE diagnosis_code IN ('E11','E11.9','E11.65')\n  AND (:territory_code IS NULL\n       OR territory_code = :territory_code)\nGROUP BY territory_code, diagnosis_code\nORDER BY patient_count DESC`,
      params:[{name:'territory_code',type:'string',required:false,desc:'Filter by territory'}]},
   ],
-  'Veeva Key People': [
+  'Veeva CRM': [
     {id:'get-hcp-profile',        label:'Get HCP Profile',            desc:'Retrieves a full HCP account profile including tier, NPI, call targets, specialty, and address.',                  enabled:true,  type:'soql',
      sql:`SELECT\n  Id,\n  Name,\n  Specialty_vod__c,\n  Account_Tier_vod__c,\n  Annual_Call_Target_vod__c,\n  YTD_Calls_vod__c,\n  Last_Activity_Date,\n  NPI_vod__c,\n  Primary_Address_vod__r.City,\n  Primary_Address_vod__r.State\nFROM Account\nWHERE RecordType.DeveloperName = 'HCP_vod'\n  AND Active_vod__c = TRUE\n  AND (Id = :hcp_id\n    OR Territory_vod__c = :territory_code)\nORDER BY Account_Tier_vod__c ASC, Name`,
      params:[{name:'hcp_id',type:'string',required:false,desc:'Veeva Account ID for a specific HCP'},{name:'territory_code',type:'string',required:false,desc:'Pull all HCPs in this territory'}]},
     {id:'search-hcps-territory',  label:'Search HCPs by Territory',   desc:'Returns all active HCPs in a territory ranked by tier with YTD call counts and cycle targets.',                    enabled:true,  type:'soql',
      sql:`SELECT\n  a.Id,\n  a.Name,\n  a.Specialty_vod__c,\n  a.Account_Tier_vod__c,\n  a.YTD_Calls_vod__c,\n  a.Annual_Call_Target_vod__c,\n  a.Last_Activity_Date,\n  a.Speaker_Program_Enrolled_vod__c\nFROM Account a\nWHERE a.Territory_vod__c = :territory_code\n  AND a.Active_vod__c = TRUE\n  AND a.RecordType.DeveloperName = 'HCP_vod'\n  AND (:tier IS NULL\n       OR a.Account_Tier_vod__c = :tier)\nORDER BY a.Account_Tier_vod__c ASC, a.Name`,
      params:[{name:'territory_code',type:'string',required:true,desc:'Territory code e.g. TX-NW-01'},{name:'tier',type:'string',required:false,desc:'Filter by tier: Tier 1, Tier 2, Tier 3'}]},
-  ],
-  'Veeva CRM': [
     {id:'get-call-history',       label:'Get Call History',           desc:'Retrieves recent Veeva call activity records for an HCP including products discussed and next objectives.',         enabled:true,  type:'soql',
      sql:`SELECT\n  c.Id,\n  c.Call_Date_vod__c,\n  c.Status_vod__c,\n  c.Call_Type_vod__c,\n  c.Attendee_vod__r.Name,\n  c.Products_Discussed_vod__c,\n  c.Next_Call_Objectives_vod__c,\n  c.Call_Duration_vod__c,\n  c.Submitted_vod__c\nFROM Call2_vod__c c\nWHERE c.Account_vod__c = :hcp_id\n  AND c.Call_Date_vod__c >= LAST_N_MONTHS:6\nORDER BY c.Call_Date_vod__c DESC\nLIMIT 20`,
      params:[{name:'hcp_id',type:'string',required:true,desc:'Veeva Account ID of the target HCP'},{name:'months_back',type:'integer',required:false,desc:'Months of history to retrieve (default 6)'}]},
@@ -686,27 +680,23 @@ const TOOL_ACTIONS = {
   'ACTO Coaching Data': [
     {id:'get-field-coaching-report', label:'Get Field Coaching Report',  desc:'Pulls Field Coaching Report (FCR) data from ACTO including observed competencies, manager ratings, and development notes.', enabled:true, type:'api',
      params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID to retrieve coaching reports for'},{name:'date_from',type:'date',required:false,desc:'Earliest FCR date to include'},{name:'competency',type:'string',required:false,desc:'Filter by competency area e.g. Objection Handling, Product Knowledge, Selling Skills'}]},
-    {id:'get-coaching-trends',       label:'Get Coaching Trends',        desc:'Aggregates FCR data across reps and time periods to surface recurring competency gaps and improvement patterns.', enabled:false, type:'api',
+    {id:'get-cxzone-scenario-completion',label:'Get CxZone Scenario Completion',desc:'Retrieves completed CxZone role-play scenario records including scores, AI feedback, and manager assessments.',    enabled:true, type:'api',
+     params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID — omit for team-level view'},{name:'scenario_name',type:'string',required:false,desc:'Filter to a specific CxZone scenario or category'},{name:'date_from',type:'date',required:false,desc:'Start date for scenario completion records'}]},
+    {id:'get-coaching-trends',       label:'Get Coaching Trends',        desc:'Aggregates FCR and CxZone data across reps and time periods to surface recurring competency gaps and improvement patterns.', enabled:false, type:'api',
      params:[{name:'team_id',type:'string',required:false,desc:'Team or district ID for aggregate view'},{name:'competency',type:'string',required:false,desc:'Focus on a specific competency area'},{name:'date_from',type:'date',required:false,desc:'Start of the trend window'}]},
-  ],
-  'CxZone': [
-    {id:'get-scenario-completion',   label:'Get Scenario Completion',    desc:'Retrieves completed CxZone role-play scenario records including scores, AI feedback, and manager assessments.',            enabled:true, type:'api',
-     params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID — omit for team-level view'},{name:'scenario_name',type:'string',required:false,desc:'Filter to a specific scenario or category'},{name:'date_from',type:'date',required:false,desc:'Start date for completion records'}]},
-    {id:'get-scenario-feedback',     label:'Get Scenario Feedback',      desc:'Returns detailed AI and manager feedback from CxZone sessions including talk track analysis and improvement recommendations.', enabled:true, type:'api',
-     params:[{name:'rep_id',type:'string',required:true,desc:'Rep ID to retrieve feedback for'},{name:'scenario_id',type:'string',required:false,desc:'Specific scenario session ID for detailed feedback'}]},
   ],
 };
 
 const SKILL_TOOLS = {
   0: ['ACTO CMS','Veeva Vault PromoMats','ACTO Learning'],
-  1: ['Veeva Key People','Veeva CRM'],
-  2: ['Veeva Key People','Veeva CRM','Snowflake'],
-  3: ['Veeva Key People','Veeva CRM'],
-  4: ['Veeva Key People','Veeva CRM'],
+  1: ['Veeva CRM'],
+  2: ['Veeva CRM','Snowflake'],
+  3: ['Veeva CRM'],
+  4: ['Veeva CRM'],
   5: ['ClinicalTrials.gov','Veeva Vault PromoMats'],
-  6: ['ACTO CMS','Veeva Vault PromoMats','ACTO Coaching Data','CxZone'],
+  6: ['ACTO CMS','Veeva Vault PromoMats','ACTO Coaching Data'],
   7: ['ACTO CMS','Veeva Vault PromoMats'],
-  8: ['Veeva Key People','Veeva CRM','Snowflake'],
+  8: ['Veeva CRM','Snowflake'],
   9: ['Snowflake'],
 };
 
@@ -787,7 +777,6 @@ function toolIconSpan(name, ib, ic, icon, size, radius) {
   if(sf) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e8f5fc;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://companieslogo.com/img/orig/SNOW-35164165.png?t=1751096598" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='❄'"></span>`;
   if(veeva) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#fff3ee;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://play-lh.googleusercontent.com/Aahvo0l5f4ZtGjka1wLw3qcXArMJgFPec6EVB6HLBCQP2ivagqrnbSXiEPitr-lRmQ=w480-h960-rw" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='V'"></span>`;
   if(acto) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e6f7f5;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 100 90" width="${imgSize}" height="${imgSize}" xmlns="http://www.w3.org/2000/svg"><path d="M50,4 L97,86 L77,86 L50,30 L23,86 L3,86 Z" fill="#2aaca0"/></svg></span>`;
-  if(name==='CxZone') return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://scontent.ffcm1-2.fna.fbcdn.net/v/t39.30808-6/309886976_591715772743667_1136739150436322784_n.png?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=dboJrQM-lFgQ7kNvwHZAHht&_nc_oc=AdqMvNlYwwlOD0EiYDS-HdgvDubt37cnJfUIJJQK2a5DN1GcahPLVkRzTTvxpdq2hAVLClv6ZaD4uJud1m9c8ytt&_nc_zt=23&_nc_ht=scontent.ffcm1-2.fna&_nc_gid=qpT0nswN6ckqMLqkhjYLVg&_nc_ss=7b289&oh=00_Af5l80EP4d2yDAR8OAnhRjEgdcQymo3dOCrv5u6nNAaP_g&oe=6A113007" width="${imgSize}" height="${imgSize}" style="object-fit:contain" onerror="this.parentNode.innerHTML='Cx'"></span>`;
   return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${ib};color:${ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:${Math.round(size*.5)}px;flex-shrink:0">${icon}</span>`;
 }
 
@@ -1521,7 +1510,7 @@ const CHAT_SCENARIOS = [
   {
     triggers:['brief','chen','2pm','call prep','pre-call','precall','before my','prepare for'],
     tools:[
-      {name:'Veeva Key People',action:'Get HCP Profile',dur:900},
+      {name:'Veeva CRM',action:'Get HCP Profile',dur:900},
       {name:'Veeva CRM',action:'Get Call History',dur:700},
     ],
     skill:'Joy - Pre-Call 360 Account Prep',
@@ -1531,7 +1520,7 @@ const CHAT_SCENARIOS = [
   {
     triggers:['tier 1','not called','this quarter','haven\'t called','uncalled','missed','zero calls'],
     tools:[
-      {name:'Veeva Key People',action:'Search HCPs by Territory',dur:1100},
+      {name:'Veeva CRM',action:'Search HCPs by Territory',dur:1100},
       {name:'Snowflake',action:'Query Territory Performance',dur:900},
     ],
     skill:'Joy - Annual Account Cycle Planning (CRM)',
