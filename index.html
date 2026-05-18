@@ -211,14 +211,85 @@ input:checked+.tog-s:before{transform:translateX(18px)}
 .m-ico{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-right:12px}
 
 /* ── Slide panel ───────────────────────────────────── */
-.sp{display:none;position:fixed;right:0;top:0;bottom:0;width:460px;background:#fff;box-shadow:-6px 0 30px rgba(0,0,0,.1);z-index:150;overflow-y:auto}
-.sp.open{display:block}
+.sp{position:fixed;right:0;top:0;bottom:0;width:460px;background:#fff;box-shadow:-8px 0 40px rgba(0,0,0,.12);z-index:150;overflow-y:auto;transform:translateX(110%);transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.sp.open{transform:translateX(0)}
 .sp-hdr{padding:18px 22px;border-bottom:1.5px solid #e2e2ec;display:flex;align-items:center;justify-content:space-between;background:#fff;position:sticky;top:0;z-index:1}
 .sp-title{font-size:15px;font-weight:700;color:#1a1a2e}
 .sp-body{padding:20px 22px}
 
 /* ── page hidden ───────────────────────────────────── */
 .page-hidden{display:none}
+
+/* ── Animations & Polish ───────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseRing{0%,100%{box-shadow:0 0 0 4px rgba(124,58,237,.15)}50%{box-shadow:0 0 0 9px rgba(124,58,237,.06)}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(16px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Modal */
+.modal{animation:fadeUp .2s cubic-bezier(.22,1,.36,1)}
+.m-overlay{transition:opacity .2s}
+
+/* Step nav */
+.sn-circle{transition:all .3s cubic-bezier(.22,1,.36,1)}
+.sn-circle.cur{animation:pulseRing 2.5s ease-in-out infinite}
+.sn-vline{transition:background .4s}
+.sn-label{transition:color .15s}
+
+/* Progress bar */
+.prog-bar{transition:width .5s cubic-bezier(.22,1,.36,1)}
+
+/* Buttons */
+.btn-p{transition:background .15s,box-shadow .15s,transform .1s}
+.btn-p:hover{box-shadow:0 4px 14px rgba(124,58,237,.3)}
+.btn-p:active{transform:scale(.97)}
+.btn-savenext{transition:background .15s,box-shadow .15s,transform .1s}
+.btn-savenext:hover{box-shadow:0 4px 14px rgba(124,58,237,.3)}
+.btn-savenext:active{transform:scale(.97)}
+.btn-s{transition:border-color .15s,color .15s,transform .1s}
+.btn-s:active{transform:scale(.97)}
+.btn-save{transition:border-color .15s,color .15s,transform .1s}
+.btn-save:active{transform:scale(.97)}
+.btn-test{transition:background .15s,box-shadow .15s,transform .1s}
+.btn-test:hover{box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.btn-test:active{transform:scale(.97)}
+
+/* Cards */
+.action-card{transition:border-color .15s,box-shadow .18s,transform .18s}
+.action-card:hover{border-color:#7c3aed!important;box-shadow:0 4px 18px rgba(124,58,237,.1);transform:translateY(-2px)}
+.action-card:active{transform:translateY(0)}
+.doc-card{transition:border-color .15s,box-shadow .18s,transform .18s}
+.doc-card:hover{box-shadow:0 4px 14px rgba(124,58,237,.1);transform:translateY(-2px)}
+.gr{transition:border-color .15s,box-shadow .15s;cursor:pointer}
+.gr:hover{border-color:#c4b5fd;box-shadow:0 2px 12px rgba(124,58,237,.08)}
+
+/* Skill rows */
+.sk-row{transition:background .12s,padding-left .15s}
+.sk-row:hover{padding-left:22px}
+
+/* Table rows */
+.tbl td{transition:background .1s}
+
+/* Tabs */
+.tab{transition:color .15s,border-bottom-color .15s}
+
+/* Inputs */
+input[type=text],textarea,select{transition:border-color .15s,box-shadow .15s}
+
+/* Dropdown */
+#resDropdown{animation:dropIn .15s cubic-bezier(.22,1,.36,1)}
+
+/* Icon imgs */
+.tool-logo{display:block;width:100%;height:100%;object-fit:contain}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:999;animation:toastIn .25s cubic-bezier(.22,1,.36,1)}
+.toast.out{animation:toastOut .25s cubic-bezier(.22,1,.36,1) forwards}
+
+/* Loading spinner in btn */
+.btn-spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 /* ── SQL code block ────────────────────────────────── */
 .sql-block{background:#1e1e2e;border-radius:8px;padding:14px 16px;margin-bottom:16px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:11.5px;color:#cdd6f4;line-height:1.9;overflow-x:auto;border:1.5px solid #2a2a3e;white-space:pre}
 .sql-kw{color:#cba6f7;font-weight:600}
@@ -302,7 +373,7 @@ input:checked+.tog-s:before{transform:translateX(18px)}
       </div>
     </div>
     <div class="mh-right">
-      <button class="btn-test">Test Agent</button>
+      <button class="btn-test" id="testBtn" onclick="testAgent()">Test Agent</button>
     </div>
   </div>
   <div class="prog-wrap"><div class="prog-bar" id="progBar" style="width:14%"></div></div>
@@ -556,6 +627,26 @@ let ctxDocs = [
   {name:'JOY', meta:'JD · PDF', preview:'JOY is an empathetic AI field partner for pharmaceutical Sales Representatives who can facilitate calls, deal with office HCP history...'}
 ];
 
+// ── Brand icon helper ────────────────────────────────
+function toolIconSpan(name, ib, ic, icon, size, radius) {
+  size = size||26; radius = radius||Math.round(size*.25);
+  const sf = name==='Snowflake', veeva = name.startsWith('Veeva');
+  const imgSize = Math.round(size*.72);
+  if(sf) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e8f5fc;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://logo.clearbit.com/snowflake.com" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='❄'"></span>`;
+  if(veeva) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#fff3ee;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://logo.clearbit.com/veeva.com" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='V'"></span>`;
+  return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${ib};color:${ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:${Math.round(size*.5)}px;flex-shrink:0">${icon}</span>`;
+}
+
+// ── Toast ────────────────────────────────────────────
+function showToast(msg) {
+  const old = document.getElementById('appToast');
+  if(old) old.remove();
+  const t = document.createElement('div');
+  t.id='appToast'; t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),280); }, 2000);
+}
+
 // ── Nav render ───────────────────────────────────────
 function renderNav() {
   const ids = NAV.map(n=>n.id);
@@ -588,12 +679,16 @@ function nextPage() {
   const ids=NAV.map(n=>n.id), i=ids.indexOf(page);
   if(i<ids.length-1) goTo(ids[i+1]);
 }
+function saveAndNext() {
+  showToast('Changes saved ✓');
+  setTimeout(nextPage, 400);
+}
 function renderFooter() {
   const hasBack = (page==='evaluate'&&evalView)||(page==='skills'&&skillView!==null);
   document.getElementById('contentFooter').innerHTML =
     (hasBack?`<button class="btn-back" onclick="doBack()">← Back</button>`:'') +
-    `<button class="btn-save" onclick="">Save</button>
-     <button class="btn-savenext" onclick="nextPage()">Save &amp; Next</button>`;
+    `<button class="btn-save" onclick="showToast('Changes saved ✓')">Save</button>
+     <button class="btn-savenext" onclick="saveAndNext()">Save &amp; Next →</button>`;
 }
 function doBack() {
   if(page==='evaluate') evalView=null;
@@ -604,6 +699,7 @@ function doBack() {
 // ── Page router ──────────────────────────────────────
 function renderPage() {
   const s = document.getElementById('contentScroll');
+  s.style.opacity='0'; s.style.transform='translateY(8px)';
   const pages = {
     context: renderContext, tools: renderTools,
     skills: ()=>skillView!==null?renderSkillDetail(skillView):renderSkillsList(),
@@ -612,6 +708,11 @@ function renderPage() {
     experience: renderExperience, access: renderAccess,
   };
   s.innerHTML = (pages[page]||renderContext)();
+  requestAnimationFrame(()=>{
+    s.style.transition='opacity .22s ease,transform .22s ease';
+    s.style.opacity='1'; s.style.transform='translateY(0)';
+    setTimeout(()=>s.style.transition='',260);
+  });
 }
 
 // ── Context ──────────────────────────────────────────
@@ -717,7 +818,7 @@ function renderTools() {
       <tbody>
         ${TOOLS.map(t=>`<tr>
           <td><div style="display:flex;align-items:center;gap:10px">
-            <span style="width:26px;height:26px;border-radius:6px;background:${t.ib};color:${t.ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">${t.icon}</span>
+            ${toolIconSpan(t.name,t.ib,t.ic,t.icon,26,6)}
             <span style="font-weight:500">${t.name}</span>
             <span class="tag ${t.type}">${t.type[0].toUpperCase()+t.type.slice(1)}</span>
           </div></td>
@@ -832,7 +933,7 @@ function renderSkillActs(){
       <div class="action-card" style="margin-bottom:10px" onclick="openAction('${toolName}','${action.id}')">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
           <div style="display:flex;align-items:center;gap:8px">
-            <span style="width:22px;height:22px;border-radius:4px;background:${tool.ib};color:${tool.ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0">${tool.icon}</span>
+            ${toolIconSpan(tool.name,tool.ib,tool.ic,tool.icon,22,4)}
             <span style="font-size:13px;font-weight:700">${action.label}</span>
             <span class="act-type ${action.type}">${action.type.toUpperCase()}</span>
           </div>
@@ -1174,7 +1275,7 @@ function openAction(toolName, actionId){
   const tool = TOOLS.find(t=>t.name===toolName)||{icon:'?',ic:'#666',ib:'#f5f5f5'};
   document.getElementById('actPanelTitle').textContent = action.label;
   document.getElementById('actPanelTool').innerHTML =
-    `<span style="width:16px;height:16px;border-radius:3px;background:${tool.ib};color:${tool.ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:9px;vertical-align:middle;margin-right:4px">${tool.icon}</span>${toolName}`;
+    `${toolIconSpan(toolName,tool.ib,tool.ic,tool.icon,16,3)}<span style="vertical-align:middle;margin-left:5px">${toolName}</span>`;
   const isSql = action.type==='sql'||action.type==='soql';
   const qLabel = action.type==='soql'?'SOQL QUERY (Veeva / Salesforce)':action.type==='sql'?'SQL QUERY (Snowflake)':'API CALL';
   const enabledBadge = action.enabled
@@ -1222,6 +1323,18 @@ function closeActPanel(){
   currentAction = null;
 }
 
+// ── Test Agent ───────────────────────────────────────
+function testAgent() {
+  const btn = document.getElementById('testBtn');
+  btn.innerHTML = '<span class="btn-spin"></span>Connecting…';
+  btn.disabled = true;
+  setTimeout(()=>{
+    btn.innerHTML = 'Test Agent';
+    btn.disabled = false;
+    showToast('Joy is ready — chat window launching soon');
+  }, 2200);
+}
+
 // ── Modal ────────────────────────────────────────────
 function openModal(){document.getElementById('toolModal').classList.add('open');switchMTab('Content',document.querySelector('#mtTabs .tab'));}
 function closeModal(){document.getElementById('toolModal').classList.remove('open');}
@@ -1234,7 +1347,7 @@ function switchMTab(t,el){
   document.getElementById('mtBody').innerHTML = items.length===0
     ?`<div style="text-align:center;padding:32px;color:#a0a0b0;font-size:13px">All tools have been added</div>`
     :items.map(item=>`<div class="m-tool" style="${item.added?'opacity:.55;pointer-events:none':''}">
-      <div class="m-ico" style="background:${item.ib};color:${item.ic}">${item.icon}</div>
+      ${toolIconSpan(item.name,item.ib,item.ic,item.icon,32,6)}
       <div style="flex:1"><div style="font-size:13px;font-weight:600">${item.name}</div><div style="font-size:11px;color:#a0a0b0">${item.desc}</div></div>
       ${item.added?`<span style="font-size:11px;color:#16a34a;font-weight:700">✓ Added</span>`:`<button class="btn-p" style="font-size:11px">Add</button>`}
     </div>`).join('');
