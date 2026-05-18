@@ -602,7 +602,8 @@ const TOOLS = [
   {name:'Veeva Vault PromoMats', type:'content', icon:'V',  ic:'#dc2626', ib:'#fef2f2'},
   {name:'ClinicalTrials.gov',    type:'content', icon:'⚕',  ic:'#0369a1', ib:'#e0f2fe'},
   {name:'Snowflake',             type:'data',    icon:'❄',  ic:'#2563eb', ib:'#eff6ff'},
-  {name:'Veeva CRM',      type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
+  {name:'Veeva Key People',      type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
+  {name:'Veeva CRM',             type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
 ];
 
 const MODAL_TOOLS = {
@@ -612,7 +613,10 @@ const MODAL_TOOLS = {
     {name:'ClinicalTrials.gov',icon:'⚕',ic:'#0369a1',ib:'#e0f2fe',desc:'Clinical trial registry and results database',added:true},
   ],
   Data:[{name:'Snowflake',icon:'❄',ic:'#2563eb',ib:'#eff6ff',desc:'Cloud data platform and analytics warehouse',added:true}],
-  CRM:[{name:'Veeva CRM',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP stakeholder mapping and relationship tracking',added:true}],
+  CRM:[
+    {name:'Veeva Key People',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP profile lookup and territory stakeholder mapping',added:true},
+    {name:'Veeva CRM',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP relationship tracking, call history, and account planning',added:true},
+  ],
   Agents:[],LMS:[],
 };
 
@@ -646,16 +650,18 @@ const TOOL_ACTIONS = {
      sql:`SELECT\n  territory_code,\n  diagnosis_code,\n  COUNT(DISTINCT patient_id)         AS patient_count,\n  ROUND(AVG(age_at_diagnosis), 1)    AS avg_age,\n  COUNT(\n    CASE WHEN currently_treated = TRUE\n    THEN 1 END\n  )                                  AS on_therapy_count,\n  ROUND(\n    COUNT(CASE WHEN currently_treated = TRUE THEN 1 END)\n    / COUNT(DISTINCT patient_id) * 100, 1\n  )                                  AS treatment_rate_pct\nFROM analytics.patient_population\nWHERE diagnosis_code IN ('E11','E11.9','E11.65')\n  AND (:territory_code IS NULL\n       OR territory_code = :territory_code)\nGROUP BY territory_code, diagnosis_code\nORDER BY patient_count DESC`,
      params:[{name:'territory_code',type:'string',required:false,desc:'Filter by territory'}]},
   ],
-  'Veeva CRM': [
-    {id:'get-hcp-profile',        label:'Get HCP Profile',            desc:'Retrieves a full HCP account profile from Veeva CRM including tier, NPI, call targets, and address.',              enabled:true,  type:'soql',
+  'Veeva Key People': [
+    {id:'get-hcp-profile',        label:'Get HCP Profile',            desc:'Retrieves a full HCP account profile including tier, NPI, call targets, specialty, and address.',                  enabled:true,  type:'soql',
      sql:`SELECT\n  Id,\n  Name,\n  Specialty_vod__c,\n  Account_Tier_vod__c,\n  Annual_Call_Target_vod__c,\n  YTD_Calls_vod__c,\n  Last_Activity_Date,\n  NPI_vod__c,\n  Primary_Address_vod__r.City,\n  Primary_Address_vod__r.State\nFROM Account\nWHERE RecordType.DeveloperName = 'HCP_vod'\n  AND Active_vod__c = TRUE\n  AND (Id = :hcp_id\n    OR Territory_vod__c = :territory_code)\nORDER BY Account_Tier_vod__c ASC, Name`,
      params:[{name:'hcp_id',type:'string',required:false,desc:'Veeva Account ID for a specific HCP'},{name:'territory_code',type:'string',required:false,desc:'Pull all HCPs in this territory'}]},
-    {id:'get-call-history',       label:'Get Call History',           desc:'Retrieves recent Veeva call activity records for an HCP including products discussed and next objectives.',         enabled:true,  type:'soql',
-     sql:`SELECT\n  c.Id,\n  c.Call_Date_vod__c,\n  c.Status_vod__c,\n  c.Call_Type_vod__c,\n  c.Attendee_vod__r.Name,\n  c.Products_Discussed_vod__c,\n  c.Next_Call_Objectives_vod__c,\n  c.Call_Duration_vod__c,\n  c.Submitted_vod__c\nFROM Call2_vod__c c\nWHERE c.Account_vod__c = :hcp_id\n  AND c.Call_Date_vod__c >= LAST_N_MONTHS:6\nORDER BY c.Call_Date_vod__c DESC\nLIMIT 20`,
-     params:[{name:'hcp_id',type:'string',required:true,desc:'Veeva Account ID of the target HCP'},{name:'months_back',type:'integer',required:false,desc:'Months of history to retrieve (default 6)'}]},
     {id:'search-hcps-territory',  label:'Search HCPs by Territory',   desc:'Returns all active HCPs in a territory ranked by tier with YTD call counts and cycle targets.',                    enabled:true,  type:'soql',
      sql:`SELECT\n  a.Id,\n  a.Name,\n  a.Specialty_vod__c,\n  a.Account_Tier_vod__c,\n  a.YTD_Calls_vod__c,\n  a.Annual_Call_Target_vod__c,\n  a.Last_Activity_Date,\n  a.Speaker_Program_Enrolled_vod__c\nFROM Account a\nWHERE a.Territory_vod__c = :territory_code\n  AND a.Active_vod__c = TRUE\n  AND a.RecordType.DeveloperName = 'HCP_vod'\n  AND (:tier IS NULL\n       OR a.Account_Tier_vod__c = :tier)\nORDER BY a.Account_Tier_vod__c ASC, a.Name`,
      params:[{name:'territory_code',type:'string',required:true,desc:'Territory code e.g. TX-NW-01'},{name:'tier',type:'string',required:false,desc:'Filter by tier: Tier 1, Tier 2, Tier 3'}]},
+  ],
+  'Veeva CRM': [
+    {id:'get-call-history',       label:'Get Call History',           desc:'Retrieves recent Veeva call activity records for an HCP including products discussed and next objectives.',         enabled:true,  type:'soql',
+     sql:`SELECT\n  c.Id,\n  c.Call_Date_vod__c,\n  c.Status_vod__c,\n  c.Call_Type_vod__c,\n  c.Attendee_vod__r.Name,\n  c.Products_Discussed_vod__c,\n  c.Next_Call_Objectives_vod__c,\n  c.Call_Duration_vod__c,\n  c.Submitted_vod__c\nFROM Call2_vod__c c\nWHERE c.Account_vod__c = :hcp_id\n  AND c.Call_Date_vod__c >= LAST_N_MONTHS:6\nORDER BY c.Call_Date_vod__c DESC\nLIMIT 20`,
+     params:[{name:'hcp_id',type:'string',required:true,desc:'Veeva Account ID of the target HCP'},{name:'months_back',type:'integer',required:false,desc:'Months of history to retrieve (default 6)'}]},
     {id:'log-call-activity',      label:'Log Call Activity',          desc:'Creates a submitted call activity record in Veeva CRM following an HCP interaction.',                              enabled:false, type:'soql',
      sql:`INSERT INTO Call2_vod__c (\n  Account_vod__c,\n  Call_Date_vod__c,\n  Call_Type_vod__c,\n  Products_Discussed_vod__c,\n  Next_Call_Objectives_vod__c,\n  Status_vod__c\n) VALUES (\n  :hcp_id,\n  :call_date,\n  'In-Person',\n  :products_discussed,\n  :next_objectives,\n  'Submitted'\n)`,
      params:[{name:'hcp_id',type:'string',required:true},{name:'call_date',type:'date',required:true},{name:'products_discussed',type:'string',required:true},{name:'next_objectives',type:'string',required:false}]},
@@ -667,14 +673,14 @@ const TOOL_ACTIONS = {
 
 const SKILL_TOOLS = {
   0: ['ACTO CMS','Veeva Vault PromoMats'],
-  1: ['Veeva CRM'],
-  2: ['Veeva CRM','Snowflake'],
-  3: ['Veeva CRM'],
-  4: ['Veeva CRM'],
+  1: ['Veeva Key People','Veeva CRM'],
+  2: ['Veeva Key People','Veeva CRM','Snowflake'],
+  3: ['Veeva Key People','Veeva CRM'],
+  4: ['Veeva Key People','Veeva CRM'],
   5: ['ClinicalTrials.gov','Veeva Vault PromoMats'],
   6: ['ACTO CMS','Veeva Vault PromoMats'],
   7: ['ACTO CMS','Veeva Vault PromoMats'],
-  8: ['Veeva CRM','Snowflake'],
+  8: ['Veeva Key People','Veeva CRM','Snowflake'],
   9: ['Snowflake'],
 };
 
@@ -1487,7 +1493,7 @@ const CHAT_SCENARIOS = [
   {
     triggers:['brief','chen','2pm','call prep','pre-call','precall','before my','prepare for'],
     tools:[
-      {name:'Veeva CRM',action:'Get HCP Profile',dur:900},
+      {name:'Veeva Key People',action:'Get HCP Profile',dur:900},
       {name:'Veeva CRM',action:'Get Call History',dur:700},
     ],
     skill:'Joy - Pre-Call 360 Account Prep',
@@ -1497,7 +1503,7 @@ const CHAT_SCENARIOS = [
   {
     triggers:['tier 1','not called','this quarter','haven\'t called','uncalled','missed','zero calls'],
     tools:[
-      {name:'Veeva CRM',action:'Search HCPs by Territory',dur:1100},
+      {name:'Veeva Key People',action:'Search HCPs by Territory',dur:1100},
       {name:'Snowflake',action:'Query Territory Performance',dur:900},
     ],
     skill:'Joy - Annual Account Cycle Planning (CRM)',
