@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperAgent Studio — Joy (Pharma)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;background:#f0f0f5;color:#1a1a2e;height:100vh;overflow:hidden;font-size:14px}
+.app{display:flex;height:100vh}
+
+/* ── Left icon rail ────────────────────────────────── */
+.icon-rail{width:54px;background:#fff;border-right:1px solid #ebebf0;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:0;flex-shrink:0;z-index:10}
+.ir-logo{width:36px;height:36px;margin-bottom:10px;display:flex;align-items:center;justify-content:center}
+.ir-ico{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;color:#9ca3af;margin:2px 0;transition:all .15s}
+.ir-ico:hover{background:#f5f0ff;color:#7c3aed}
+.ir-ico.active{background:#f0ebff;color:#7c3aed}
+.ir-ico svg{width:20px;height:20px}
+.ir-spacer{flex:1}
+.ir-divider{width:28px;height:1px;background:#ebebf0;margin:6px 0}
+
+/* ── Step nav sidebar ──────────────────────────────── */
+.step-nav{width:280px;background:#fff;border-right:1px solid #ebebf0;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sn-agent{padding:18px 20px 14px}
+.sn-bc{font-size:11px;color:#a0a0b0;margin-bottom:3px}
+.sn-name{font-size:20px;font-weight:700;color:#7c3aed;display:flex;align-items:center;gap:7px}
+.sn-name svg{width:18px;height:18px;opacity:.6;cursor:pointer;color:#7c3aed}
+.sn-badges{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.sn-badge{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #e2e2ec;color:#a0a0b0;background:#fff;white-space:nowrap}
+.sn-steps{padding:6px 0 16px;flex:1}
+.sn-step{display:flex;align-items:flex-start;padding:6px 18px;cursor:pointer;gap:12px;position:relative}
+.sn-step:hover .sn-label{color:#7c3aed}
+.sn-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.sn-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.sn-circle.done{background:#7c3aed}
+.sn-circle.cur{background:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.15)}
+.sn-circle.off{background:#ebebf0}
+.sn-circle svg{width:15px;height:15px}
+.sn-circle.done svg,.sn-circle.cur svg{color:#fff}
+.sn-circle.off svg{color:#b0b0c0}
+.sn-vline{width:2px;height:16px;margin:3px auto;border-radius:1px}
+.sn-vline.done{background:#7c3aed}
+.sn-vline.off{background:#e2e2ec}
+.sn-right{padding-top:4px;flex:1}
+.sn-label{font-size:13px;font-weight:500;color:#3d3d5c;transition:color .15s}
+.sn-label.cur{font-weight:700;color:#7c3aed}
+.sn-label.off{color:#b0b0c0}
+.sn-sub{font-size:11px;color:#9ca3af;margin-top:2px;line-height:1.4}
+
+/* ── Main content ──────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5fa}
+.main-header{background:#fff;border-bottom:1px solid #ebebf0;padding:12px 28px 10px;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.mh-left .mh-bc{font-size:11px;color:#a0a0b0;margin-bottom:4px}
+.mh-left .mh-bc span{cursor:pointer}
+.mh-left .mh-bc span:hover{color:#7c3aed}
+.mh-left .mh-title{font-size:22px;font-weight:700;color:#7c3aed;display:flex;align-items:center;gap:8px}
+.mh-right{display:flex;align-items:flex-start;gap:14px}
+.btn-test{background:#7c3aed;color:#fff;border:none;padding:9px 20px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.01em}
+.btn-test:hover{background:#6d28d9}
+.bot-avatar{width:78px;flex-shrink:0}
+.mh-badges{display:flex;gap:8px;margin-top:5px}
+.prog-wrap{height:5px;background:#e2e2ec;flex-shrink:0}
+.prog-bar{height:5px;background:linear-gradient(90deg,#7c3aed,#9f67f5);transition:width .4s ease}
+.content-scroll{flex:1;overflow-y:auto;padding:28px 32px}
+.content-footer{padding:14px 32px;border-top:1px solid #ebebf0;display:flex;align-items:center;justify-content:flex-end;background:#fff;gap:10px;flex-shrink:0}
+.btn-save{background:#fff;color:#4b4b6b;border:1px solid #d1d1e0;padding:9px 22px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer}
+.btn-save:hover{border-color:#7c3aed;color:#7c3aed}
+.btn-savenext{background:#7c3aed;color:#fff;border:none;padding:9px 22px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-savenext:hover{background:#6d28d9}
+.btn-back{background:#fff;color:#4b4b6b;border:1px solid #d1d1e0;padding:9px 16px;border-radius:7px;font-size:12px;cursor:pointer;margin-right:auto}
+.btn-back:hover{border-color:#7c3aed;color:#7c3aed}
+
+/* ── Form elements ─────────────────────────────────── */
+.fg{margin-bottom:20px}
+.fl{font-size:12px;font-weight:600;color:#4b4b6b;margin-bottom:5px;display:block;letter-spacing:.01em}
+.fl .opt{font-weight:400;color:#a0a0b0}
+input[type=text],input[type=email],textarea,select{width:100%;padding:9px 12px;border:1.5px solid #e2e2ec;border-radius:7px;font-size:13px;color:#1a1a2e;outline:none;font-family:inherit;background:#fff;transition:border-color .15s}
+input[type=text]:focus,textarea:focus,select:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.08)}
+textarea{resize:vertical;min-height:74px;line-height:1.55}
+.sel-wrap{position:relative}
+.sel-wrap::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#a0a0b0;pointer-events:none;font-size:12px}
+select{appearance:none;background:#fff;cursor:pointer}
+
+/* ── Tabs ──────────────────────────────────────────── */
+.tabs{display:flex;border-bottom:1.5px solid #e2e2ec;margin-bottom:22px}
+.tab{padding:9px 20px;font-size:13px;cursor:pointer;color:#a0a0b0;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;font-weight:500;letter-spacing:.01em}
+.tab:hover{color:#7c3aed}
+.tab.active{color:#7c3aed;border-bottom-color:#7c3aed}
+
+/* ── Buttons ───────────────────────────────────────── */
+.btn-p{background:#7c3aed;color:#fff;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-p:hover{background:#6d28d9}
+.btn-s{background:#fff;color:#4b4b6b;border:1.5px solid #d1d1e0;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer}
+.btn-s:hover{border-color:#7c3aed;color:#7c3aed}
+.btn-rm{background:#fff;color:#e11d48;border:1.5px solid #fda4af;padding:4px 12px;border-radius:5px;font-size:12px;cursor:pointer;font-weight:500}
+.btn-rm:hover{background:#fff1f2}
+.btn-view{background:#7c3aed;color:#fff;border:none;padding:5px 12px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer}
+.btn-upd{background:#f59e0b;color:#fff;border:none;padding:5px 12px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer}
+
+/* ── Tags / badges ─────────────────────────────────── */
+.tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.tag.content{background:#ede9fe;color:#7c3aed}
+.tag.data{background:#fce7f3;color:#be185d}
+.tag.crm{background:#d1fae5;color:#065f46}
+.tag.lms{background:#fef3c7;color:#92400e}
+.status-done{background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+
+/* ── Cards / tables ────────────────────────────────── */
+.card{background:#fff;border:1.5px solid #e2e2ec;border-radius:10px;overflow:hidden}
+.tbl{width:100%;border-collapse:collapse}
+.tbl-head{background:#f7f7fb}
+.tbl th{text-align:left;padding:10px 16px;font-size:11px;font-weight:700;color:#8080a0;text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid #e2e2ec}
+.tbl td{padding:12px 16px;font-size:13px;color:#3d3d5c;border-bottom:1px solid #f0f0f8}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#faf8ff}
+
+/* ── Banners ───────────────────────────────────────── */
+.info-b{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:11px 14px;display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;font-size:12px;color:#1d4ed8;line-height:1.5}
+.warn-b{background:#fffbeb;border-left:4px solid #f59e0b;border-radius:0 7px 7px 0;padding:11px 14px;margin-bottom:18px;font-size:12px;color:#78350f;line-height:1.5}
+
+/* ── Section header ────────────────────────────────── */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.sec-title{font-size:18px;font-weight:700;color:#1a1a2e}
+
+/* ── Skill rows ────────────────────────────────────── */
+.sk-row{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid #f0f0f8;cursor:pointer;transition:background .12s}
+.sk-row:hover{background:#faf8ff}
+.sk-row:last-child{border-bottom:none}
+.sk-name{flex:1;font-size:13px;color:#3d3d5c;font-weight:500}
+
+/* ── Keywords ──────────────────────────────────────── */
+.kw-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border:1.5px solid #e2e2ec;border-radius:7px;min-height:42px}
+.kw{background:#7c3aed;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;display:flex;align-items:center;gap:4px;font-weight:500}
+.kw-rm{cursor:pointer;opacity:.65;font-size:10px;line-height:1}
+.kw-rm:hover{opacity:1}
+
+/* ── Doc card ──────────────────────────────────────── */
+.doc-card{border:1.5px solid #e2e2ec;border-radius:9px;padding:12px;width:190px;cursor:pointer;transition:border-color .15s}
+.doc-card:hover{border-color:#7c3aed}
+.doc-prev{background:linear-gradient(135deg,#f0ebff,#e8d8ff);height:72px;border-radius:5px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#7c3aed;padding:8px;text-align:center;line-height:1.3;overflow:hidden}
+.doc-name{font-size:12px;font-weight:700;color:#3d3d5c}
+.doc-meta{font-size:10px;color:#a0a0b0;margin-top:2px}
+
+/* ── Guardrail items ───────────────────────────────── */
+.gr{border:1.5px solid #e2e2ec;border-radius:8px;padding:14px 16px;margin-bottom:10px;background:#fff}
+.gr-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.gr-title{font-size:13px;font-weight:700;color:#1a1a2e}
+.gr-phrase{font-size:11px;color:#8080a0;margin-bottom:4px;line-height:1.4}
+.gr-msg{font-size:12px;color:#4b4b6b;font-style:italic;line-height:1.4}
+.ab{padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.02em}
+.ab-block{background:#fee2e2;color:#dc2626}
+.ab-warn{background:#fef3c7;color:#d97706}
+.ab-redirect{background:#dbeafe;color:#1d4ed8}
+.ab-escalate{background:#f3e8ff;color:#7c3aed}
+
+/* ── SOP rule ──────────────────────────────────────── */
+.sop-r{padding:11px 14px;background:#faf8ff;border-radius:7px;margin-bottom:8px;font-size:12px;line-height:1.65;border-left:3px solid #7c3aed;color:#3d3d5c}
+
+/* ── Eval stats ────────────────────────────────────── */
+.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.ev-card{border:1.5px solid #e2e2ec;border-radius:9px;padding:14px;background:#fff}
+.ev-lbl{font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em}
+.ev-val{font-size:26px;font-weight:700;color:#1a1a2e;margin-top:3px}
+
+/* ── Access user ───────────────────────────────────── */
+.u-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* ── Channel card ──────────────────────────────────── */
+.ch-tr{border-bottom:1px solid #f0f0f8}
+.ch-tr:last-child{border-bottom:none}
+.ch-row{display:flex;align-items:center;padding:13px 16px;gap:12px}
+.ch-ico{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ch-info{flex:1}
+.ch-name{font-size:13px;font-weight:600;color:#1a1a2e}
+.ch-desc{font-size:11px;color:#a0a0b0}
+.ch-settings{padding:16px 18px;background:#faf8ff;border-top:1px solid #e2e2ec}
+.ch-stitle{font-size:10px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+
+/* ── Toggle ────────────────────────────────────────── */
+.tog{position:relative;display:inline-block;width:40px;height:22px}
+.tog input{opacity:0;width:0;height:0}
+.tog-s{position:absolute;cursor:pointer;inset:0;background:#d1d1e0;border-radius:22px;transition:.25s}
+.tog-s:before{position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
+input:checked+.tog-s{background:#7c3aed}
+input:checked+.tog-s:before{transform:translateX(18px)}
+.tog-row{display:flex;align-items:center;gap:10px;font-size:12px;color:#4b4b6b;margin-bottom:10px}
+
+/* ── Resources action card ─────────────────────────── */
+.action-card{border:1.5px solid #e2e2ec;border-radius:9px;padding:16px;background:#fff;cursor:pointer;transition:border-color .15s}
+.action-card:hover{border-color:#7c3aed}
+.conf-tag{background:#f0fdf4;color:#16a34a;border:1px solid #86efac;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.ena-tag{background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600}
+
+/* ── Q-table ───────────────────────────────────────── */
+.q-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.q-tbl th{background:#f7f7fb;padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.05em;border-bottom:1.5px solid #e2e2ec}
+.q-tbl td{padding:10px;border-bottom:1px solid #f0f0f8;vertical-align:top;max-width:160px}
+.q-tbl td p{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;color:#3d3d5c;line-height:1.5}
+.skill-tag{font-size:10px;color:#7c3aed;font-weight:600;line-height:1.4}
+
+/* ── Modal ─────────────────────────────────────────── */
+.m-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,30,.45);z-index:200;align-items:center;justify-content:center}
+.m-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;width:520px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.m-hdr{padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #e2e2ec}
+.m-title{font-size:16px;font-weight:700;color:#1a1a2e}
+.m-close{background:none;border:none;font-size:22px;cursor:pointer;color:#a0a0b0;line-height:1;padding:0}
+.m-close:hover{color:#1a1a2e}
+.m-body{padding:18px 22px}
+.m-tool{display:flex;align-items:center;padding:12px;border:1.5px solid #e2e2ec;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.m-tool:hover{border-color:#7c3aed;background:#faf8ff}
+.m-ico{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-right:12px}
+
+/* ── Slide panel ───────────────────────────────────── */
+.sp{display:none;position:fixed;right:0;top:0;bottom:0;width:460px;background:#fff;box-shadow:-6px 0 30px rgba(0,0,0,.1);z-index:150;overflow-y:auto}
+.sp.open{display:block}
+.sp-hdr{padding:18px 22px;border-bottom:1.5px solid #e2e2ec;display:flex;align-items:center;justify-content:space-between;background:#fff;position:sticky;top:0;z-index:1}
+.sp-title{font-size:15px;font-weight:700;color:#1a1a2e}
+.sp-body{padding:20px 22px}
+
+/* ── page hidden ───────────────────────────────────── */
+.page-hidden{display:none}
+/* ── SQL code block ────────────────────────────────── */
+.sql-block{background:#1e1e2e;border-radius:8px;padding:14px 16px;margin-bottom:16px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:11.5px;color:#cdd6f4;line-height:1.9;overflow-x:auto;border:1.5px solid #2a2a3e;white-space:pre}
+.sql-kw{color:#cba6f7;font-weight:600}
+.sql-fn{color:#89dceb}
+.sql-str{color:#a6e3a1}
+.sql-num{color:#fab387}
+.sql-param{color:#f38ba8;font-style:italic}
+.sql-cmt{color:#585b70;font-style:italic}
+/* ── Action tag ─────────────────────────────────────── */
+.act-type{padding:1px 7px;border-radius:4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.act-type.sql{background:#dbeafe;color:#1d4ed8}
+.act-type.soql{background:#d1fae5;color:#065f46}
+.act-type.api{background:#fef3c7;color:#92400e}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- Icon rail -->
+<div class="icon-rail">
+  <div class="ir-logo">
+    <svg viewBox="0 0 32 32" width="32" height="32"><polygon points="16,3 29,27 3,27" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="ir-divider"></div>
+  <div class="ir-ico active" title="Agent Studio">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+  </div>
+  <div class="ir-ico" title="Analytics">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+  </div>
+  <div class="ir-ico" title="Content">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+  </div>
+  <div class="ir-ico" title="Reports">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+  </div>
+  <div class="ir-ico" title="Notifications">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+  </div>
+  <div class="ir-ico" style="color:#7c3aed;background:#f0ebff">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+  </div>
+  <div class="ir-ico" title="Users">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </div>
+  <div class="ir-spacer"></div>
+  <div class="ir-divider"></div>
+  <div class="ir-ico" title="Settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+  </div>
+</div>
+
+<!-- Step nav -->
+<div class="step-nav">
+  <div class="sn-agent">
+    <div class="sn-bc">SuperAgent Studio › <span>Joy (Pharma)</span></div>
+    <div class="sn-name">
+      Joy (Pharma)
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2 2"/></svg>
+    </div>
+    <div class="sn-badges">
+      <span class="sn-badge">Objective Checker: Inactive</span>
+      <span class="sn-badge">Skills Checker: Inactive</span>
+    </div>
+  </div>
+  <div class="sn-steps" id="stepNav"></div>
+</div>
+
+<!-- Main area -->
+<div class="main">
+  <div class="main-header">
+    <div class="mh-left">
+      <div class="mh-bc"><span>SuperAgent Studio</span> › <span>Joy (Pharma)</span> › <span id="mhPage">Context</span></div>
+      <div class="mh-title">
+        Joy (Pharma)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;opacity:.5;cursor:pointer"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div class="mh-badges" id="mhBadges">
+        <span class="sn-badge">Objective Checker: Inactive</span>
+        <span class="sn-badge">Skills Checker: Inactive</span>
+      </div>
+    </div>
+    <div class="mh-right">
+      <button class="btn-test">Test Agent</button>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="progBar" style="width:14%"></div></div>
+  <div class="content-scroll" id="contentScroll"></div>
+  <div class="content-footer" id="contentFooter"></div>
+</div>
+</div>
+
+<!-- Add Tool Modal -->
+<div class="m-overlay" id="toolModal">
+  <div class="modal">
+    <div class="m-hdr">
+      <span class="m-title">Add Tool</span>
+      <button class="m-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="m-body">
+      <div class="tabs" id="mtTabs">
+        <div class="tab active" onclick="switchMTab('Content',this)">Content</div>
+        <div class="tab" onclick="switchMTab('Data',this)">Data</div>
+        <div class="tab" onclick="switchMTab('CRM',this)">CRM</div>
+        <div class="tab" onclick="switchMTab('Agents',this)">Agents</div>
+        <div class="tab" onclick="switchMTab('LMS',this)">LMS</div>
+      </div>
+      <div id="mtBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Action Detail Slide Panel -->
+<div class="sp" id="actPanel">
+  <div class="sp-hdr">
+    <div>
+      <div class="sp-title" id="actPanelTitle">Action</div>
+      <div style="font-size:11px;color:#a0a0b0;margin-top:2px" id="actPanelTool"></div>
+    </div>
+    <button class="m-close" onclick="closeActPanel()">×</button>
+  </div>
+  <div class="sp-body" id="actPanelBody"></div>
+</div>
+
+<!-- Resources Slide Panel -->
+<div class="sp" id="resPanel">
+  <div class="sp-hdr">
+    <div>
+      <div class="sp-title">Resources <span class="conf-tag" style="margin-left:6px">configured</span></div>
+    </div>
+    <button class="m-close" onclick="closePanel()">×</button>
+  </div>
+  <div class="sp-body">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label>
+      <span style="font-size:13px;font-weight:600">Find Resource</span>
+      <span class="ena-tag">Enabled</span>
+    </div>
+    <div style="background:#f7f7fb;border-radius:6px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#8080a0;border:1.5px solid #e2e2ec">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">DEFINITION</div>
+      Searches for specific Resources based on a natural language query.
+    </div>
+    <div class="fg"><label class="fl">* Name</label><input type="text" value="find-resource"></div>
+    <div class="fg"><label class="fl">* Description</label><textarea>Searches for specific Resources based on a natural language query.</textarea></div>
+    <div class="fg"><label class="fl">Instructions</label><textarea placeholder="Custom response instructions" style="min-height:80px"></textarea></div>
+    <div style="font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">PARAMETERS</div>
+    <div style="border:1.5px solid #e2e2ec;border-radius:8px;padding:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label>
+        <span style="font-size:13px;font-weight:600">query</span>
+        <span style="background:#dbeafe;color:#1d4ed8;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600">string</span>
+        <span style="margin-left:auto;background:#fef9c3;color:#713f12;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600">required</span>
+      </div>
+      <div class="fg" style="margin-bottom:10px"><label class="fl">DEFAULT</label><input type="text" value="A natural language query for semantic search." style="font-size:12px"></div>
+      <div class="fg"><label class="fl">* Description</label><textarea style="min-height:52px;font-size:12px">A natural language query for semantic search.</textarea></div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#065f46;font-weight:500"><input type="checkbox" checked style="width:auto;accent-color:#7c3aed"> Required parameter</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn-rm" style="padding:7px 16px">Delete</button>
+      <button class="btn-p" style="padding:7px 18px">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SVG icon helpers ─────────────────────────────────
+const ICONS = {
+  context: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  tools:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>`,
+  skills:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>`,
+  governance:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  evaluate:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>`,
+  experience:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  access:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,
+};
+
+// ── Data ─────────────────────────────────────────────
+const NAV = [
+  {id:'context',   label:'Context',    sub:'Define your Agent\'s identity, role and purpose.'},
+  {id:'tools',     label:'Tools',      sub:'Connect systems and data sources your Agent will use.'},
+  {id:'skills',    label:'Skills',     sub:'Add and configure what your Agent can do.'},
+  {id:'governance',label:'Governance', sub:'Establish compliance, boundaries, and approvals.'},
+  {id:'evaluate',  label:'Evaluate',   sub:'Test your Agent\'s responses and accuracy.'},
+  {id:'experience',label:'Experience', sub:'Define how and where your Agent interacts with users.'},
+  {id:'access',    label:'Access',     sub:'Control who can use or test this Agent.'},
+];
+
+const TOOLS = [
+  {name:'ACTO CMS',              type:'content', icon:'△', ic:'#16a34a', ib:'#f0fdf4'},
+  {name:'Veeva Vault PromoMats', type:'content', icon:'V',  ic:'#dc2626', ib:'#fef2f2'},
+  {name:'ClinicalTrials.gov',    type:'content', icon:'⚕',  ic:'#0369a1', ib:'#e0f2fe'},
+  {name:'Snowflake',             type:'data',    icon:'❄',  ic:'#2563eb', ib:'#eff6ff'},
+  {name:'Veeva Key People',      type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
+];
+
+const MODAL_TOOLS = {
+  Content:[
+    {name:'ACTO CMS',icon:'△',ic:'#16a34a',ib:'#f0fdf4',desc:'AI-powered content management system',added:true},
+    {name:'Veeva Vault PromoMats',icon:'V',ic:'#dc2626',ib:'#fef2f2',desc:'Promotional materials content library',added:true},
+    {name:'ClinicalTrials.gov',icon:'⚕',ic:'#0369a1',ib:'#e0f2fe',desc:'Clinical trial registry and results database',added:true},
+  ],
+  Data:[{name:'Snowflake',icon:'❄',ic:'#2563eb',ib:'#eff6ff',desc:'Cloud data platform and analytics warehouse',added:true}],
+  CRM:[{name:'Veeva Key People',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP stakeholder mapping and relationship tracking',added:true}],
+  Agents:[],LMS:[],
+};
+
+const TOOL_ACTIONS = {
+  'ACTO CMS': [
+    {id:'find-resource',     label:'Find Resource',       desc:'Searches Knowledge Base Resources using natural language semantic search.', enabled:true,  type:'api',
+     params:[{name:'query',type:'string',required:true,desc:'Natural language query for semantic search'}]},
+    {id:'get-content-topic', label:'Get Content by Topic',desc:'Retrieves MLR-approved content filtered by therapeutic area or topic.',    enabled:false, type:'api',
+     params:[{name:'topic',type:'string',required:true,desc:'Therapeutic area or content topic'},{name:'format',type:'string',required:false,desc:'Content format: pdf, slide, video'}]},
+  ],
+  'Veeva Vault PromoMats': [
+    {id:'search-promomats',  label:'Search Approved Content', desc:'Searches MLR-approved promotional materials in Veeva Vault PromoMats.',  enabled:true,  type:'api',
+     params:[{name:'query',type:'string',required:true},{name:'approval_status',type:'string',required:false,desc:'Approved, In Review, Withdrawn'}]},
+    {id:'get-vault-doc',     label:'Get Document by ID',      desc:'Retrieves a specific Vault document with full metadata and download URL.',enabled:false, type:'api',
+     params:[{name:'document_id',type:'string',required:true,desc:'Vault document ID'}]},
+  ],
+  'ClinicalTrials.gov': [
+    {id:'search-trials',     label:'Search Clinical Trials',  desc:'Searches ClinicalTrials.gov for studies by drug name, condition, or NCT number.',enabled:true, type:'api',
+     params:[{name:'query',type:'string',required:true,desc:'Drug name, condition, or NCT ID'},{name:'status',type:'string',required:false,desc:'Recruiting, Completed, Active, Not yet recruiting'}]},
+    {id:'get-trial-results', label:'Get Trial Results',        desc:'Retrieves primary outcome results and publications for a specific trial.',  enabled:false,type:'api',
+     params:[{name:'nct_id',type:'string',required:true,desc:'NCT identifier e.g. NCT04321234'}]},
+  ],
+  'Snowflake': [
+    {id:'query-territory-perf',   label:'Query Territory Performance',  desc:'Pulls rep territory performance metrics — calls, Rx volume, and goal attainment — from the analytics warehouse.',        enabled:true,  type:'sql',
+     sql:`SELECT\n  rep_id,\n  territory_code,\n  SUM(calls_completed)              AS total_calls,\n  SUM(rx_volume)                    AS rx_volume,\n  ROUND(AVG(call_rate), 2)          AS avg_call_rate,\n  ROUND(ytd_goal_attainment * 100, 1) AS goal_pct\nFROM analytics.territory_performance\nWHERE fiscal_period = CURRENT_QUARTER()\n  AND (:territory_code IS NULL\n       OR territory_code = :territory_code)\nGROUP BY rep_id, territory_code\nORDER BY rx_volume DESC`,
+     params:[{name:'territory_code',type:'string',required:false,desc:'Filter to a specific territory code e.g. TX-NW-01'}]},
+    {id:'query-prescribing-trends',label:'Query Prescribing Trends',     desc:'Retrieves HCP prescribing data for a drug with YoY growth calculations and market share.',                                enabled:true,  type:'sql',
+     sql:`SELECT\n  h.hcp_id,\n  h.hcp_name,\n  h.specialty,\n  h.prescriptions_ytd,\n  h.prescriptions_prior_yr,\n  ROUND(\n    (h.prescriptions_ytd - h.prescriptions_prior_yr)\n    / NULLIF(h.prescriptions_prior_yr, 0) * 100,\n  1) AS yoy_growth_pct,\n  h.market_share_pct\nFROM analytics.hcp_prescribing h\nWHERE h.drug_name ILIKE '%' || :drug_name || '%'\n  AND (:territory_code IS NULL\n       OR h.territory_code = :territory_code)\nORDER BY h.prescriptions_ytd DESC\nLIMIT 50`,
+     params:[{name:'drug_name',type:'string',required:true,desc:'Drug name to filter e.g. Metformin'},{name:'territory_code',type:'string',required:false,desc:'Scope to a specific territory'}]},
+    {id:'query-patient-population', label:'Query Patient Population',    desc:'Analyzes diagnosed patient population and on-therapy rates by territory and ICD-10 code.',                              enabled:false, type:'sql',
+     sql:`SELECT\n  territory_code,\n  diagnosis_code,\n  COUNT(DISTINCT patient_id)         AS patient_count,\n  ROUND(AVG(age_at_diagnosis), 1)    AS avg_age,\n  COUNT(\n    CASE WHEN currently_treated = TRUE\n    THEN 1 END\n  )                                  AS on_therapy_count,\n  ROUND(\n    COUNT(CASE WHEN currently_treated = TRUE THEN 1 END)\n    / COUNT(DISTINCT patient_id) * 100, 1\n  )                                  AS treatment_rate_pct\nFROM analytics.patient_population\nWHERE diagnosis_code IN ('E11','E11.9','E11.65')\n  AND (:territory_code IS NULL\n       OR territory_code = :territory_code)\nGROUP BY territory_code, diagnosis_code\nORDER BY patient_count DESC`,
+     params:[{name:'territory_code',type:'string',required:false,desc:'Filter by territory'}]},
+  ],
+  'Veeva Key People': [
+    {id:'get-hcp-profile',        label:'Get HCP Profile',            desc:'Retrieves a full HCP account profile from Veeva CRM including tier, NPI, call targets, and address.',              enabled:true,  type:'soql',
+     sql:`SELECT\n  Id,\n  Name,\n  Specialty_vod__c,\n  Account_Tier_vod__c,\n  Annual_Call_Target_vod__c,\n  YTD_Calls_vod__c,\n  Last_Activity_Date,\n  NPI_vod__c,\n  Primary_Address_vod__r.City,\n  Primary_Address_vod__r.State\nFROM Account\nWHERE RecordType.DeveloperName = 'HCP_vod'\n  AND Active_vod__c = TRUE\n  AND (Id = :hcp_id\n    OR Territory_vod__c = :territory_code)\nORDER BY Account_Tier_vod__c ASC, Name`,
+     params:[{name:'hcp_id',type:'string',required:false,desc:'Veeva Account ID for a specific HCP'},{name:'territory_code',type:'string',required:false,desc:'Pull all HCPs in this territory'}]},
+    {id:'get-call-history',       label:'Get Call History',           desc:'Retrieves recent Veeva call activity records for an HCP including products discussed and next objectives.',         enabled:true,  type:'soql',
+     sql:`SELECT\n  c.Id,\n  c.Call_Date_vod__c,\n  c.Status_vod__c,\n  c.Call_Type_vod__c,\n  c.Attendee_vod__r.Name,\n  c.Products_Discussed_vod__c,\n  c.Next_Call_Objectives_vod__c,\n  c.Call_Duration_vod__c,\n  c.Submitted_vod__c\nFROM Call2_vod__c c\nWHERE c.Account_vod__c = :hcp_id\n  AND c.Call_Date_vod__c >= LAST_N_MONTHS:6\nORDER BY c.Call_Date_vod__c DESC\nLIMIT 20`,
+     params:[{name:'hcp_id',type:'string',required:true,desc:'Veeva Account ID of the target HCP'},{name:'months_back',type:'integer',required:false,desc:'Months of history to retrieve (default 6)'}]},
+    {id:'search-hcps-territory',  label:'Search HCPs by Territory',   desc:'Returns all active HCPs in a territory ranked by tier with YTD call counts and cycle targets.',                    enabled:true,  type:'soql',
+     sql:`SELECT\n  a.Id,\n  a.Name,\n  a.Specialty_vod__c,\n  a.Account_Tier_vod__c,\n  a.YTD_Calls_vod__c,\n  a.Annual_Call_Target_vod__c,\n  a.Last_Activity_Date,\n  a.Speaker_Program_Enrolled_vod__c\nFROM Account a\nWHERE a.Territory_vod__c = :territory_code\n  AND a.Active_vod__c = TRUE\n  AND a.RecordType.DeveloperName = 'HCP_vod'\n  AND (:tier IS NULL\n       OR a.Account_Tier_vod__c = :tier)\nORDER BY a.Account_Tier_vod__c ASC, a.Name`,
+     params:[{name:'territory_code',type:'string',required:true,desc:'Territory code e.g. TX-NW-01'},{name:'tier',type:'string',required:false,desc:'Filter by tier: Tier 1, Tier 2, Tier 3'}]},
+    {id:'log-call-activity',      label:'Log Call Activity',          desc:'Creates a submitted call activity record in Veeva CRM following an HCP interaction.',                              enabled:false, type:'soql',
+     sql:`INSERT INTO Call2_vod__c (\n  Account_vod__c,\n  Call_Date_vod__c,\n  Call_Type_vod__c,\n  Products_Discussed_vod__c,\n  Next_Call_Objectives_vod__c,\n  Status_vod__c\n) VALUES (\n  :hcp_id,\n  :call_date,\n  'In-Person',\n  :products_discussed,\n  :next_objectives,\n  'Submitted'\n)`,
+     params:[{name:'hcp_id',type:'string',required:true},{name:'call_date',type:'date',required:true},{name:'products_discussed',type:'string',required:true},{name:'next_objectives',type:'string',required:false}]},
+    {id:'get-account-plan',       label:'Get Account Plan',           desc:'Retrieves strategic cycle plan data and goal tracking for an HCP from Veeva CRM.',                                enabled:false, type:'soql',
+     sql:`SELECT\n  ap.Id,\n  ap.Name,\n  ap.Account_vod__r.Name,\n  ap.Cycle_Plan_vod__c,\n  ap.Target_vod__c,\n  ap.Actual_vod__c,\n  ap.Goal_vod__c,\n  ap.Start_Date_vod__c,\n  ap.End_Date_vod__c\nFROM Account_Plan_vod__c ap\nWHERE ap.Account_vod__c = :hcp_id\n  AND ap.Active_vod__c = TRUE\nORDER BY ap.Start_Date_vod__c DESC`,
+     params:[{name:'hcp_id',type:'string',required:true,desc:'Veeva Account ID'}]},
+  ],
+};
+
+const SKILL_TOOLS = {
+  0: ['ACTO CMS','Veeva Vault PromoMats'],
+  1: ['Veeva Key People'],
+  2: ['Veeva Key People','Snowflake'],
+  3: ['Veeva Key People'],
+  4: ['Veeva Key People'],
+  5: ['ClinicalTrials.gov','Veeva Vault PromoMats'],
+  6: ['ACTO CMS','Veeva Vault PromoMats'],
+  7: ['ACTO CMS','Veeva Vault PromoMats'],
+  8: ['Veeva Key People','Snowflake'],
+  9: ['Snowflake'],
+};
+
+const SKILLS = [
+  'Product Knowledge',
+  'JOY - Account Onboarding & Potential Assessment (CRM)',
+  'JOY - Annual Account Cycle Planning & Target Management (CRM)',
+  'JOY - Call Scheduling & Route Optimization (CRM)',
+  'JOY - Call Capture & Activity Tracking (CRM)',
+  'JOY - Competitive Intelligence (Non-CRM)',
+  'Joy - Objection Handling and Coaching',
+  'Joy - Selling Framework: Reimbursement, Market Access, & Field Reimbursement',
+  'Joy - Precall 360 Account Prep',
+  'Joy - Komodo Health Rx: Prescribing Behaviors, Patient Population, Territory Insights',
+];
+
+const GUARDRAILS = [
+  {n:1,t:'Off-Label Promotion Prevention',p:'Requests for uses not in FDA-approved labeling',a:'Block',m:'"I can\'t provide guidance on off-label uses or claims beyond Metformin\'s FDA-approved labeling."'},
+  {n:2,t:'No Comparative Superiority Claims Without Approved Data',p:'Claims that Metformin is superior to named competitors without published head-to-head trial data',a:'Warn',m:'"I can only support comparative claims with published clinical trial data."'},
+  {n:3,t:'No Individual Patient Data Exposure',p:'Requests for individual patient names, medical record numbers, diagnoses, or insurance IDs',a:'Block',m:'"I can\'t access or share individual patient-level data for privacy and HIPAA compliance reasons."'},
+  {n:4,t:'Adverse Event Escalation Trigger',p:'Any mention of a product-related adverse event, side effect, or product quality complaint',a:'Block + Escalate',m:'"I need to flag this immediately for our Pharmacovigilance team."'},
+  {n:5,t:'No Pricing Guarantees or Binding Reimbursement Promises',p:'Statements promising specific patient co-pay amounts, guaranteed coverage',a:'Warn',m:'"I can\'t make binding reimbursement or coverage promises."'},
+  {n:6,t:'Anti-Kickback & Sunshine Act Awareness',p:'Suggestions to offer meals, gifts, consulting fees, or financial incentives to HCPs',a:'Block',m:'"Any compensation or value provided to HCPs is subject to Anti-Kickback Statute and Sunshine Act requirements."'},
+  {n:7,t:'No Medical Advice to Patients (Rep-Facing Only)',p:'Requests for JOY to provide medical guidance to end patients',a:'Block',m:'"I provide tools for Sales Reps only—not medical advice for patients."'},
+  {n:8,t:'Competitor Disparagement Prevention',p:'Negative or disparaging language about competitors not supported by evidence',a:'Warn',m:'"I can support evidence-based clinical differentiation, but disparagement is off-limits."'},
+  {n:9,t:'Sample Compliance (PDMA)',p:'Sample distribution without full documentation, expired dates, or non-licensed individuals',a:'Block',m:'"All sample distributions must comply with PDMA requirements."'},
+  {n:10,t:'Formulary Accuracy Disclaimer',p:'Stale or potentially outdated formulary status information being shared as current',a:'Warn',m:'"Formulary data can change frequently. The information I\'m providing is current as of the last data refresh."'},
+  {n:11,t:'Clinical Trial Data Recency Check',p:'Clinical evidence or study data cited without verification of publication date',a:'Warn',m:'"Clinical evidence should be recent and relevant. The data I\'m citing is from [source/date]."'},
+  {n:12,t:'Escalation to MSL/Medical Affairs for Unsolicited Medical Questions',p:'Unsolicited medical questions or clinical nuances that fall outside rep scope',a:'Redirect',m:'"That\'s a complex clinical question best answered by our Medical Affairs / MSL team."'},
+];
+
+const SOP_RULES = [
+  'RULE 1 — NEVER LIST DATA SOURCES: Never say "here are the relevant resources," never show filenames or links, never enumerate your knowledge documents. You have connected systems — Veeva CRM, Komodo Health, call schedules, HCP profiles, competitive intel. Synthesize from them invisibly.',
+  'RULE 2 — NEVER ASK CLARIFYING QUESTIONS: When a rep asks you to plan their week, brief an HCP, handle an objection, or log a call — act immediately with the data you have. The only acceptable question is confirming call capture details before saving.',
+  'RULE 3 — NEVER HALLUCINATE DATA: Only cite numbers, percentages, prescribing data, market share, and clinical evidence that exist in your knowledge documents. If you do not have a specific data point, say "I don\'t have that specific data point in my current information."',
+  'RULE 4 — RESPOND IN CLEAN PARAGRAPHS: No emojis. No bold markdown headers. No bullet point lists. Write in natural flowing paragraphs like a colleague talking before a call.',
+  'RULE 5 — COMPLIANCE IS AUTOMATIC: Weave PDMA sample compliance, Sunshine Act/Open Payments, HIPAA, and FDA off-label restrictions into every response. Never wait to be asked.',
+  'RULE 6 — LEAD WITH THE SO WHAT: Every response must open with the most actionable insight first. Not a data dump. Not a list of facts. An insight followed by a recommendation.',
+];
+
+const ACCESS_USERS = [
+  {i:'DH',n:'Dan Henry',r:'admin',t:'Sales',tr:'—',d:'17/05/2026',c:'#6366f1'},
+  {i:'JK',n:'JoJo Kalita',r:'admin',t:'Sales',tr:'—',d:'14/05/2026',c:'#8b5cf6'},
+  {i:'KK',n:'Kapil Kalra',r:'admin',t:'Sales',tr:'conference, United States',d:'14/05/2026',c:'#06b6d4'},
+  {i:'MW',n:'Marie Woods',r:'admin',t:'Sales',tr:'—',d:'14/05/2026',c:'#10b981'},
+  {i:'RR',n:'Rob Richter',r:'admin',t:'Sales',tr:'—',d:'17/05/2026',c:'#f59e0b'},
+  {i:'RJ',n:'Ryan Janvion',r:'admin',t:'Sales',tr:'—',d:'16/04/2026',c:'#ef4444'},
+  {i:'ZA',n:'Zain Amer',r:'admin',t:'Sales',tr:'—',d:'14/05/2026',c:'#3b82f6'},
+];
+
+const EVAL_Q = [
+  {q:'You have six active HCP accounts across Tiers 1, 2, and 3. Based on YTD performance and risk flags, which account deserves reallocation of visits and why?',e:'Dr. Foster is flagged red with only 1 call completed against a 6-call annual target.',a:'Dr. Marcus Webb deserves immediate visit reallocation, significantly underperforming at 66.7%.',r:'The agent\'s response fundamentally contradicts the expected answer in identifying which account deserves reallocation.',sk:'JOY - Annual Account Cycle Planning (CRM)'},
+  {q:'Looking at your 2026 annual cycle targets for Dr. Yates, what\'s the gap between strategic relationship goals and execution?',e:'You have completed 6 calls through Q1 and are on pace. The hidden metric is speaker program enrollment due by April 30.',a:'You\'re actually in excellent shape on execution. Both responses confirm 6 calls completed through Q1.',r:'The agent response aligns well with the expected answer on key points.',sk:'JOY - Annual Account Cycle Planning (CRM)'},
+  {q:'You\'ve been assigned Dr. James Okonkwo as a new Tier 1 account. What does his referral pattern tell you about his prescribing philosophy?',e:'Dr. Okonkwo is sending newly diagnosed T2D patients to Dr. Yates at high volume — signals comfort with stepwise intensification.',a:'Dr. James Okonkwo is actually an existing Tier 1 account at Peachtree Family Health in Decatur.',r:'The agent response contains multiple critical inaccuracies when compared to the expected answer.',sk:'Joy - Precall 360 Account Prep'},
+];
+
+// ── State ────────────────────────────────────────────
+let page = 'context';
+let skillView = null;
+let evalView = null;
+let govTab = 'guardrails';
+let accessTab = 'audience';
+let expTab = 'channels';
+let skillTab = 'context';
+let expandedCh = {};
+let mtab = 'Content';
+let currentAction = null;
+let showResMenu = false;
+let ctxDocs = [
+  {name:'JOY', meta:'JD · PDF', preview:'JOY is an empathetic AI field partner for pharmaceutical Sales Representatives who can facilitate calls, deal with office HCP history...'}
+];
+
+// ── Nav render ───────────────────────────────────────
+function renderNav() {
+  const ids = NAV.map(n=>n.id);
+  const ci = ids.indexOf(page);
+  const html = NAV.map((n,i) => {
+    const st = i<ci?'done':i===ci?'cur':'off';
+    return `<div class="sn-step${i===ci?' active':''}" onclick="goTo('${n.id}')">
+      <div class="sn-left">
+        <div class="sn-circle ${st}">${ICONS[n.id]||''}</div>
+        ${i<NAV.length-1?`<div class="sn-vline ${i<ci?'done':'off'}"></div>`:''}
+      </div>
+      <div class="sn-right">
+        <div class="sn-label ${st==='cur'?'cur':st==='off'?'off':''}">${n.label}</div>
+        ${i===ci?`<div class="sn-sub">${n.sub}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('stepNav').innerHTML = html;
+  document.getElementById('mhPage').textContent = NAV[ci].label;
+  const pct = Math.round(ci/(NAV.length-1)*100);
+  document.getElementById('progBar').style.width = pct+'%';
+}
+
+function goTo(id) {
+  page=id; skillView=null; evalView=null; skillTab='context';
+  renderNav(); renderPage(); renderFooter();
+  document.getElementById('contentScroll').scrollTop=0;
+}
+function nextPage() {
+  const ids=NAV.map(n=>n.id), i=ids.indexOf(page);
+  if(i<ids.length-1) goTo(ids[i+1]);
+}
+function renderFooter() {
+  const hasBack = (page==='evaluate'&&evalView)||(page==='skills'&&skillView!==null);
+  document.getElementById('contentFooter').innerHTML =
+    (hasBack?`<button class="btn-back" onclick="doBack()">← Back</button>`:'') +
+    `<button class="btn-save" onclick="">Save</button>
+     <button class="btn-savenext" onclick="nextPage()">Save &amp; Next</button>`;
+}
+function doBack() {
+  if(page==='evaluate') evalView=null;
+  else if(page==='skills') { skillView=null; skillTab='context'; }
+  renderPage(); renderFooter();
+}
+
+// ── Page router ──────────────────────────────────────
+function renderPage() {
+  const s = document.getElementById('contentScroll');
+  const pages = {
+    context: renderContext, tools: renderTools,
+    skills: ()=>skillView!==null?renderSkillDetail(skillView):renderSkillsList(),
+    governance: renderGovernance,
+    evaluate: ()=>evalView?renderEvalDetail():renderEvalList(),
+    experience: renderExperience, access: renderAccess,
+  };
+  s.innerHTML = (pages[page]||renderContext)();
+}
+
+// ── Context ──────────────────────────────────────────
+function renderContext() {
+  const docCards = ctxDocs.map((d,i) => `
+    <div class="doc-card" style="position:relative">
+      ${i>0?`<button onclick="removeCtxDoc(${i})" style="position:absolute;top:6px;right:6px;background:none;border:none;color:#fca5a5;cursor:pointer;font-size:13px;line-height:1;padding:0" title="Remove">×</button>`:''}
+      <div class="doc-prev">${d.preview}</div>
+      <div class="doc-name">${d.name}</div>
+      <div class="doc-meta">${d.meta}</div>
+    </div>`).join('');
+
+  const dropdown = showResMenu ? `
+    <div id="resDropdown" style="position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1.5px solid #e2e2ec;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:80;min-width:220px;overflow:hidden">
+      <div style="padding:6px 0">
+        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;cursor:pointer;color:#3d3d5c;transition:background .1s" onmouseover="this.style.background='#faf8ff'" onmouseout="this.style.background=''">
+          <span style="width:28px;height:28px;background:#ede9fe;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📄</span>
+          <div><div style="font-weight:600">Upload Job Description</div><div style="font-size:11px;color:#a0a0b0;margin-top:1px">PDF, DOCX, or TXT</div></div>
+          <input type="file" accept=".pdf,.doc,.docx,.txt" style="display:none" onchange="handleJDUpload(this)">
+        </label>
+        <div style="height:1px;background:#f0f0f8;margin:0 10px"></div>
+        <div onclick="addCompetencies()" style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;cursor:pointer;color:#3d3d5c;transition:background .1s" onmouseover="this.style.background='#faf8ff'" onmouseout="this.style.background=''">
+          <span style="width:28px;height:28px;background:#d1fae5;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🎯</span>
+          <div><div style="font-weight:600">Competencies</div><div style="font-size:11px;color:#a0a0b0;margin-top:1px">Add role competency framework</div></div>
+        </div>
+      </div>
+    </div>` : '';
+
+  return `
+  <div class="fg"><label class="fl">Agent Name <span style="color:#ef4444">*</span></label>
+    <div style="position:relative"><input type="text" value="Joy (Pharma)">
+    <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#a0a0b0">▾</span></div></div>
+  <div class="fg"><label class="fl">Nickname <span class="opt">(Used for voice conversations and as a display name)</span></label>
+    <input type="text" value="Joy"></div>
+  <div class="fg"><label class="fl">Role <span style="color:#ef4444">*</span></label>
+    <div class="sel-wrap"><select><option>Sales Rep</option><option>Territory Manager</option><option>Medical Science Liaison</option></select></div></div>
+  <div class="fg"><label class="fl">Reference Documents <span class="opt">(Optional - used for AI-powered suggestions)</span></label>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px" id="docCards">${docCards}</div>
+    <div style="position:relative;display:inline-block">
+      <button class="btn-s" style="font-size:12px" onclick="toggleResMenu(event)">+ Add Resource ▾</button>
+      ${dropdown}
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Agent Description</label>
+    <textarea style="min-height:84px">SuperAgent supports hospital sales specialists by helping them prepare for customer interactions, access approved product and formulary-related information, create in-service support materials, draft compliant follow-up communications, and streamline administrative tasks such as CRM writeback and account planning.</textarea>
+  </div>`;
+}
+
+function toggleResMenu(e) {
+  e.stopPropagation();
+  showResMenu = !showResMenu;
+  renderPage();
+  if(showResMenu) {
+    setTimeout(()=>document.addEventListener('click', closeResMenuOnce), 0);
+  }
+}
+function closeResMenuOnce() {
+  showResMenu = false;
+  renderPage();
+  document.removeEventListener('click', closeResMenuOnce);
+}
+function removeCtxDoc(i) {
+  ctxDocs.splice(i,1);
+  renderPage();
+}
+function handleJDUpload(input) {
+  const file = input.files[0];
+  if(!file) return;
+  showResMenu = false;
+  const alreadyExists = ctxDocs.find(d=>d.meta.includes('JD'));
+  if(!alreadyExists) {
+    ctxDocs.push({
+      name: file.name.replace(/\.[^.]+$/,'').substring(0,22),
+      meta: 'JD · ' + file.name.split('.').pop().toUpperCase(),
+      preview: 'Job Description uploaded for AI-powered agent configuration and role context alignment.'
+    });
+  }
+  renderPage();
+}
+function addCompetencies() {
+  showResMenu = false;
+  const alreadyExists = ctxDocs.find(d=>d.name==='Competencies');
+  if(!alreadyExists) {
+    ctxDocs.push({
+      name: 'Competencies',
+      meta: 'Competencies · Framework',
+      preview: 'Sales Rep competency framework: clinical knowledge, objection handling, territory planning, HCP engagement, compliance adherence.'
+    });
+  }
+  renderPage();
+}
+
+// ── Tools ────────────────────────────────────────────
+function renderTools() {
+  return `
+  <div class="sec-hdr">
+    <div class="sec-title">Tools</div>
+    <button class="btn-p" onclick="openModal()">Add Tool</button>
+  </div>
+  <div class="card">
+    <table class="tbl">
+      <thead class="tbl-head"><tr><th>Property</th><th style="text-align:right">Action</th></tr></thead>
+      <tbody>
+        ${TOOLS.map(t=>`<tr>
+          <td><div style="display:flex;align-items:center;gap:10px">
+            <span style="width:26px;height:26px;border-radius:6px;background:${t.ib};color:${t.ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">${t.icon}</span>
+            <span style="font-weight:500">${t.name}</span>
+            <span class="tag ${t.type}">${t.type[0].toUpperCase()+t.type.slice(1)}</span>
+          </div></td>
+          <td style="text-align:right">
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px">
+              <button style="background:none;border:none;color:#c0c0d0;cursor:pointer;font-size:16px;padding:2px" title="Settings">⚙</button>
+              <button class="btn-rm">Remove</button>
+            </div>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ── Skills ───────────────────────────────────────────
+function renderSkillsList() {
+  return `
+  <div class="sec-hdr"><div></div><button class="btn-p">Add Skill</button></div>
+  <div class="card">
+    <table class="tbl">
+      <thead class="tbl-head"><tr><th>Skill Name</th><th style="text-align:right">Action</th></tr></thead>
+      <tbody>
+        ${SKILLS.map((s,i)=>`<tr class="sk-row" onclick="openSkill(${i})">
+          <td class="sk-name">${s}</td>
+          <td style="text-align:right">
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px">
+              <button style="background:none;border:none;color:#c0c0d0;cursor:pointer;font-size:16px;padding:2px" onclick="event.stopPropagation()" title="Settings">⚙</button>
+              <button class="btn-rm" onclick="event.stopPropagation()">Remove</button>
+              ${i>0?`<button style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:16px;padding:2px" onclick="event.stopPropagation()">🗑</button>`:''}
+            </div>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+function openSkill(i){skillView=i;skillTab='context';renderPage();renderFooter();}
+
+function renderSkillDetail(i) {
+  const s = SKILLS[i];
+  const tabs = {
+    context: renderSkillCtx,
+    knowledge: renderSkillKnow,
+    actions: renderSkillActs,
+    prompts: renderSkillPrompts,
+  };
+  return `
+  <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#a0a0b0;margin-bottom:18px">
+    <span style="cursor:pointer;color:#8080a0" onclick="skillView=null;renderPage();renderFooter()">Skills</span>
+    <span>›</span><span style="color:#1a1a2e;font-weight:600">${s}</span>
+  </div>
+  <div class="tabs">
+    ${['context','knowledge','actions','prompts'].map(t=>`<div class="tab${skillTab===t?' active':''}" onclick="skillTab='${t}';renderPage()">${t[0].toUpperCase()+t.slice(1)==='Prompts'?'Sample Prompts':t[0].toUpperCase()+t.slice(1)}</div>`).join('')}
+  </div>
+  ${(tabs[skillTab]||renderSkillCtx)(s)}`;
+}
+function renderSkillCtx(name){
+  const isP = name==='Product Knowledge';
+  const desc = isP?`This skill transforms dense scientific literature, package inserts, and clinical data into field-ready insights. When a rep is asked about the drug's performance in specific patient populations or its differentiation versus competitors, JOY will quickly surface clear, concise, and compliant explanations. It includes compliance-anchored instructions for handling adverse event (AE) disclosures, which is vital for maintaining regulatory and ethical standards.`
+    :`This skill enables JOY to support reps with ${name.replace('JOY - ','').replace('Joy - ','').toLowerCase()}, leveraging connected CRM data and territory intelligence to deliver actionable recommendations without asking clarifying questions.`;
+  const obj = isP?`To provide field reps with a fully contextual, science-backed, and MLR-aligned knowledge base for Metformin that can be queried in real-time. This includes clinical trial results, mechanism of action, administration protocols, patient eligibility, and safety considerations—all optimized for field usage during HCP engagements.`
+    :`To equip Sales Reps with real-time data-driven guidance that improves call efficiency, HCP engagement, and territory performance — all within compliance guardrails.`;
+  const kws = isP?['Indication','dose','dosage','administration','contraindication','warning','MOA','mechanism','clinical trial','label','PI']:['HCP','territory','CRM','account','strategy','planning','call','schedule'];
+  return `
+  <div class="fg"><label class="fl">Name <span style="color:#ef4444">*</span></label><input type="text" value="${name}"></div>
+  <div class="fg"><label class="fl">Description</label><textarea style="min-height:100px">${desc}</textarea></div>
+  <div class="fg"><label class="fl">Objective <span style="color:#ef4444">*</span></label><textarea style="min-height:96px">${obj}</textarea></div>
+  <div class="fg"><label class="fl">Keywords</label>
+    <div class="kw-wrap">${kws.map(k=>`<span class="kw">${k}<span class="kw-rm" onclick="">×</span></span>`).join('')}</div>
+  </div>`;
+}
+function renderSkillKnow(){
+  return `
+  <div class="info-b">📁 Knowledge documents provide the data sources this skill draws from.</div>
+  <div class="card" style="margin-bottom:16px">
+    <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f0f0f8">
+      <div style="width:30px;height:30px;background:#f0fdf4;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#16a34a;font-weight:700;font-size:13px">△</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">JOY_Product_Knowledge.pdf</div>
+      <div style="font-size:11px;color:#a0a0b0">Metformin clinical data, PI, safety monograph, MLR-approved messaging</div></div>
+      <button class="btn-rm">Remove</button>
+    </div>
+  </div>
+  <button class="btn-s" style="font-size:12px">+ Add Knowledge Document</button>`;
+}
+function renderSkillActs(){
+  const toolNames = SKILL_TOOLS[skillView] || [];
+  let html = `
+  <div style="font-size:15px;font-weight:700;color:#1a1a2e;margin-bottom:14px">Actions</div>
+  <div style="font-size:11px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">ACTO</div>
+  <div class="action-card" style="margin-bottom:20px" onclick="openPanel()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="width:22px;height:22px;border-radius:4px;background:#f0fdf4;color:#16a34a;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0">△</span>
+        <span style="font-size:13px;font-weight:700">Resources</span>
+        <span class="act-type api">api</span>
+      </div>
+      <span class="conf-tag">configured</span>
+    </div>
+    <div style="font-size:12px;color:#8080a0;margin-bottom:8px">Provides access to Knowledge Base Resources/Documents associated with the AI agent</div>
+    <div style="font-size:11px;color:#a0a0b0">1 Action Available &nbsp;·&nbsp; 1 enabled</div>
+  </div>`;
+
+  for(const toolName of toolNames){
+    const tool = TOOLS.find(t=>t.name===toolName);
+    const acts = TOOL_ACTIONS[toolName]||[];
+    if(!tool||!acts.length) continue;
+    const enabledCount = acts.filter(a=>a.enabled).length;
+    html += `<div style="font-size:11px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${toolName}</div>`;
+    acts.forEach(action=>{
+      html += `
+      <div class="action-card" style="margin-bottom:10px" onclick="openAction('${toolName}','${action.id}')">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="width:22px;height:22px;border-radius:4px;background:${tool.ib};color:${tool.ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0">${tool.icon}</span>
+            <span style="font-size:13px;font-weight:700">${action.label}</span>
+            <span class="act-type ${action.type}">${action.type.toUpperCase()}</span>
+          </div>
+          ${action.enabled
+            ?`<span class="conf-tag">enabled</span>`
+            :`<span style="background:#f7f7fb;color:#a0a0b0;border:1px solid #e2e2ec;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">disabled</span>`}
+        </div>
+        <div style="font-size:12px;color:#8080a0;margin-bottom:8px">${action.desc}</div>
+        <div style="font-size:11px;color:#a0a0b0">${acts.length} Action${acts.length!==1?'s':''} Available &nbsp;·&nbsp; ${enabledCount} enabled</div>
+      </div>`;
+    });
+    html += `<div style="height:12px"></div>`;
+  }
+  return html;
+}
+function renderSkillPrompts(){
+  const prompts=['"What\'s the mechanism of action for Metformin XR?"','"Dr. Jones asked about Metformin safety in elderly patients. What should I say?"','"What are the approved indications for Metformin?"','"A patient is concerned about lactic acidosis risk. What\'s our approved response?"','"What patient populations are eligible for Metformin therapy?"','"An HCP reported a possible adverse event. Walk me through the AE reporting process."','"What are the dosing options for Metformin IR vs. ER?"','"Compare Metformin\'s efficacy data to what\'s on the label."'];
+  return `
+  <div class="info-b">💡 Sample prompts help users understand what to ask this skill.</div>
+  ${prompts.map((p,i)=>`<div class="fg"><label class="fl" style="font-size:11px;color:#a0a0b0">Prompt ${i+1}</label><input type="text" value="${p.replace(/"/g,'&quot;')}"></div>`).join('')}
+  <button class="btn-s" style="font-size:12px;margin-top:4px">+ Add Prompt</button>`;
+}
+
+// ── Governance ───────────────────────────────────────
+function renderGovernance() {
+  const t = govTab;
+  return `
+  <div class="tabs">
+    <div class="tab${t==='guardrails'?' active':''}" onclick="govTab='guardrails';renderPage()">Guardrails</div>
+    <div class="tab${t==='sop'?' active':''}" onclick="govTab='sop';renderPage()">SOP Guidelines</div>
+    <div class="tab${t==='disclaimer'?' active':''}" onclick="govTab='disclaimer';renderPage()">Disclaimer</div>
+  </div>
+  ${t==='guardrails'?renderGuardrails():t==='sop'?renderSOP():renderDisclaimer()}`;
+}
+function renderGuardrails() {
+  const cls={Block:'ab-block',Warn:'ab-warn','Block + Escalate':'ab-escalate',Redirect:'ab-redirect'};
+  return `
+  <div class="sec-hdr" style="margin-bottom:14px">
+    <div style="font-size:15px;font-weight:700">Guardrails <span style="font-size:12px;font-weight:400;color:#a0a0b0">(${GUARDRAILS.length})</span></div>
+    <button class="btn-p" style="font-size:11px">+ Add Guardrail</button>
+  </div>
+  ${GUARDRAILS.map(g=>`
+  <div class="gr">
+    <div class="gr-hdr">
+      <div class="gr-title">${g.n}. ${g.t}</div>
+      <span class="ab ${cls[g.a]||'ab-warn'}">${g.a}</span>
+    </div>
+    <div class="gr-phrase">Trigger: ${g.p}</div>
+    <div class="gr-msg">${g.m.substring(0,110)}${g.m.length>110?'…':''}</div>
+  </div>`).join('')}`;
+}
+function renderSOP() {
+  return `
+  <div class="warn-b">ℹ You must add SOP details before proceeding. Without these, the assistant cannot be configured. Please add the required detail or choose to opt out.</div>
+  <div class="fg"><label class="fl">Select Country</label><div class="sel-wrap"><select><option>United States</option><option>Canada</option><option>United Kingdom</option></select></div></div>
+  <div style="font-size:13px;font-weight:600;color:#3d3d5c;margin-bottom:10px">SOP Guidelines <span style="font-size:12px;font-weight:400;color:#a0a0b0">(Frames the agent's response according to your rules)</span></div>
+  <textarea style="min-height:320px;font-size:12px;line-height:1.7">${SOP_RULES.join('\n\n')}</textarea>`;
+}
+function renderDisclaimer() {
+  return `
+  <div class="fg"><label class="fl">Title <span class="opt">(Required so the user understands the source)</span></label>
+    <input type="text" value="JOY AI Sales Assistant — Demo Environment"></div>
+  <div class="fg"><label class="fl">Message <span class="opt">(This is your company's policy)</span></label>
+    <textarea style="min-height:90px">This is a simulated demo environment powered by ACTO SuperAgents. All HCP profiles, prescribing data, call histories, and territory information are fictional and created for demonstration purposes only.</textarea></div>
+  <div class="fg"><label class="fl">Privacy Policy Link <span class="opt">(optional)</span></label>
+    <input type="text" value="https://www.acto.com/privacy-policy">
+    <div style="font-size:11px;color:#a0a0b0;margin-top:3px">Provide a link to your privacy policy or terms of use</div></div>
+  <div class="fg"><label class="fl">Pre Disclaimer <span class="opt">(shown at the start of every AI response)</span></label>
+    <input type="text" value="This response is generated by JOY, an AI-powered sales assistant operating in demo mode with simulated data."></div>
+  <div class="fg"><label class="fl">Post Disclaimer <span class="opt">(shown at the end of every AI response)</span></label>
+    <input type="text" value="JOY is a demo assistant. All data shown is fictional. Verify all clinical claims, compliance guidance, and territory data against approved sources before use in the field."></div>`;
+}
+
+// ── Evaluate ─────────────────────────────────────────
+function renderEvalList() {
+  return `
+  <div class="sec-hdr">
+    <div class="sec-title">Evaluations</div>
+    <button class="btn-p">Create Evaluation</button>
+  </div>
+  <div class="card">
+    <table class="tbl">
+      <thead class="tbl-head"><tr><th>Name</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600">Joy 3</td>
+          <td><span class="status-done">Completed</span></td>
+          <td style="color:#8080a0;font-size:12px">4/7/2026, 8:58:02 PM</td>
+          <td><div style="display:flex;gap:6px">
+            <button class="btn-view" onclick="evalView='d';renderPage();renderFooter()">View</button>
+            <button class="btn-upd">Update</button>
+            <button class="btn-rm">Delete</button>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+function renderEvalDetail() {
+  return `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+    <div class="sec-title">Joy 3</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="btn-s" style="font-size:12px;padding:6px 10px">↻</button>
+      <span class="status-done">Completed</span>
+      <button class="btn-p" style="font-size:12px">Export</button>
+    </div>
+  </div>
+  <div style="font-size:15px;font-weight:700;margin-bottom:12px">Summary</div>
+  <div class="ev-grid">
+    <div class="ev-card"><div class="ev-lbl">Total Questions</div><div class="ev-val">25</div></div>
+    <div class="ev-card"><div class="ev-lbl">Average Score</div><div class="ev-val">5.32</div></div>
+    <div class="ev-card"><div class="ev-lbl">Avg Relevance</div><div class="ev-val">7.04</div></div>
+    <div class="ev-card"><div class="ev-lbl">Avg Quality</div><div class="ev-val">5.76</div></div>
+    <div class="ev-card"><div class="ev-lbl">Avg Response Time (ms)</div><div class="ev-val">20,584</div></div>
+    <div class="ev-card"><div class="ev-lbl">Skill Accuracy %</div><div class="ev-val">0</div></div>
+  </div>
+  <div class="card" style="padding:14px 16px;margin-bottom:22px">
+    <div style="font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Accuracy Distribution</div>
+    <div style="display:flex;gap:16px;margin-bottom:8px;font-size:12px">
+      <span style="color:#16a34a;font-weight:600">● Accurate (8)</span>
+      <span style="color:#f59e0b;font-weight:600">● Partially Accurate (11)</span>
+      <span style="color:#ef4444;font-weight:600">● Inaccurate (6)</span>
+    </div>
+    <div style="height:8px;border-radius:4px;overflow:hidden;display:flex">
+      <div style="width:32%;background:#16a34a"></div>
+      <div style="width:44%;background:#f59e0b"></div>
+      <div style="width:24%;background:#ef4444"></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div style="font-size:15px;font-weight:700">Questions</div>
+    <div style="font-size:11px;color:#a0a0b0;font-weight:600">25/25 Processed</div>
+  </div>
+  <div style="overflow-x:auto;border-radius:8px;border:1.5px solid #e2e2ec">
+  <table class="q-tbl">
+    <thead><tr><th style="min-width:150px">Question</th><th style="min-width:150px">Expected Answer</th><th style="min-width:150px">Actual Answer</th><th style="min-width:150px">Evaluation Reasoning</th><th>Expected Skill</th><th>Actual Skill</th></tr></thead>
+    <tbody>${EVAL_Q.map(q=>`<tr>
+      <td><p>${q.q}</p></td>
+      <td><p>${q.e}</p></td>
+      <td><p>${q.a}</p></td>
+      <td><p>${q.r}</p></td>
+      <td><span class="skill-tag">${q.sk}</span></td>
+      <td style="color:#a0a0b0">—</td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+// ── Experience ───────────────────────────────────────
+const CH_DATA = [
+  {id:'acto', name:'ACTO', desc:'Default ACTO platform channel', icon:'△', ic:'#16a34a', ib:'#f0fdf4', def:true},
+  {id:'phone', name:'Phone', desc:'Voice call channel for rep conversations', icon:'📞', ic:'#7c3aed', ib:'#f5f0ff', def:false},
+  {id:'sms', name:'SMS / Text', desc:'Text messaging channel for quick rep interactions', icon:'💬', ic:'#0369a1', ib:'#e0f2fe', def:false},
+  {id:'widget', name:'Web Widget', desc:'Embeddable chat widget for web applications', icon:'⊞', ic:'#d97706', ib:'#fffbeb', def:false},
+];
+function renderExperience() {
+  return `
+  <div class="tabs">
+    <div class="tab${expTab==='channels'?' active':''}" onclick="expTab='channels';renderPage()">Channels</div>
+    <div class="tab${expTab==='settings'?' active':''}" onclick="expTab='settings';renderPage()">Settings</div>
+  </div>
+  ${expTab==='channels'?renderChannels():renderExpSettings()}`;
+}
+function renderChannels() {
+  return `
+  <div class="info-b">ℹ Power-up your Agent by adding Channels to expand how and where reps interact with JOY.</div>
+  <div class="card">
+    <table class="tbl">
+      <thead class="tbl-head"><tr><th>Name</th><th style="text-align:right">Action</th></tr></thead>
+      <tbody>
+        ${CH_DATA.map(ch=>`
+        <tr>
+          <td><div style="display:flex;align-items:center;gap:10px">
+            <span style="width:28px;height:28px;border-radius:6px;background:${ch.ib};color:${ch.ic};display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${ch.icon}</span>
+            <div><div style="font-size:13px;font-weight:600">${ch.name}</div><div style="font-size:11px;color:#a0a0b0">${ch.desc}</div></div>
+          </div></td>
+          <td style="text-align:right">${ch.def
+            ?`<button class="btn-s" style="font-size:11px;cursor:default">Default</button>`
+            :`<button class="btn-s" style="font-size:11px" onclick="expandedCh['${ch.id}']=!expandedCh['${ch.id}'];renderPage()">${expandedCh[ch.id]?'Hide Settings':'Configure'}</button>`
+          }</td>
+        </tr>
+        ${!ch.def&&expandedCh[ch.id]?`<tr><td colspan="2" style="padding:0">
+          <div class="ch-settings">
+            <div class="ch-stitle">${ch.name} Configuration</div>
+            ${renderChSettings(ch.id)}
+          </div>
+        </td></tr>`:''}`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+function renderChSettings(id) {
+  if(id==='phone') return `
+    <div class="fg"><label class="fl">Phone Number</label><input type="text" placeholder="+1 (555) 000-0000"></div>
+    <div class="fg"><label class="fl">Welcome Message</label><input type="text" value="Hello, I'm JOY, your AI field partner. How can I assist you today?"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="fg"><label class="fl">Max Call Duration (min)</label><input type="text" value="30"></div>
+      <div class="fg"><label class="fl">Voice Type</label><div class="sel-wrap"><select><option>Female (Neural)</option><option>Male (Neural)</option></select></div></div>
+    </div>
+    <div class="fg"><label class="fl">Language</label><div class="sel-wrap"><select><option>English (US)</option><option>Spanish (US)</option><option>French (CA)</option></select></div></div>
+    <div class="tog-row"><label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label><span>Record calls for quality assurance</span></div>
+    <div class="tog-row"><label class="tog"><input type="checkbox"><span class="tog-s"></span></label><span>Enable call transcription</span></div>`;
+  if(id==='sms') return `
+    <div class="fg"><label class="fl">SMS Number</label><input type="text" placeholder="+1 (555) 000-0000"></div>
+    <div class="fg"><label class="fl">Welcome Message</label><input type="text" value="Hi! I'm JOY. Text me your questions about accounts, scheduling, or product info."></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="fg"><label class="fl">Max Message Length (chars)</label><input type="text" value="1600"></div>
+      <div class="fg"><label class="fl">Delivery Window</label><div class="sel-wrap"><select><option>8 AM – 6 PM local</option><option>Always on</option></select></div></div>
+    </div>
+    <div class="fg"><label class="fl">Opt-Out Message</label><input type="text" value="Reply STOP to unsubscribe from JOY messages."></div>
+    <div class="tog-row"><label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label><span>Enable read receipts</span></div>
+    <div class="tog-row"><label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label><span>Allow file attachments</span></div>`;
+  if(id==='widget') return `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="fg"><label class="fl">Widget Name</label><input type="text" value="JOY Assistant"></div>
+      <div class="fg"><label class="fl">Primary Color</label>
+        <div style="position:relative"><input type="text" value="#7c3aed" style="padding-left:36px">
+        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;background:#7c3aed;border-radius:4px;display:block"></span></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="fg"><label class="fl">Position</label><div class="sel-wrap"><select><option>Bottom Right</option><option>Bottom Left</option></select></div></div>
+      <div class="fg"><label class="fl">Default State</label><div class="sel-wrap"><select><option>Collapsed</option><option>Expanded</option></select></div></div>
+    </div>
+    <div class="fg"><label class="fl">Welcome Message</label><input type="text" value="Hi Nate! I'm JOY. Ready to help you prepare for today's calls."></div>
+    <div class="fg"><label class="fl">Input Placeholder</label><input type="text" value="Ask JOY anything about your territory…"></div>
+    <div class="tog-row"><label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label><span>Show ACTO branding</span></div>
+    <div class="tog-row"><label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label><span>Enable conversation history</span></div>
+    <div class="tog-row"><label class="tog"><input type="checkbox"><span class="tog-s"></span></label><span>Show typing indicator</span></div>`;
+  return '';
+}
+function renderExpSettings() {
+  return `
+  <div class="fg"><label class="fl">Session Timeout (minutes)</label><input type="text" value="30"></div>
+  <div class="fg"><label class="fl">Max Conversation Length (turns)</label><input type="text" value="50"></div>
+  <div class="fg"><label class="fl">Response Language</label><div class="sel-wrap"><select><option>English (US)</option><option>Spanish</option><option>French</option></select></div></div>
+  <div style="font-size:13px;font-weight:600;color:#3d3d5c;margin-bottom:10px">Feature Toggles</div>
+  <div class="tog-row"><label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label><span>Enable conversation logging</span></div>
+  <div class="tog-row"><label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label><span>Show typing indicator</span></div>
+  <div class="tog-row"><label class="tog"><input type="checkbox"><span class="tog-s"></span></label><span>Enable file attachments</span></div>
+  <div class="tog-row"><label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label><span>Auto-suggest prompts</span></div>`;
+}
+
+// ── Access ───────────────────────────────────────────
+function renderAccess() {
+  return `
+  <div class="tabs">
+    <div class="tab${accessTab==='audience'?' active':''}" onclick="accessTab='audience';renderPage()">Audience</div>
+    <div class="tab${accessTab==='calibration'?' active':''}" onclick="accessTab='calibration';renderPage()">Calibration Feedback</div>
+    <div class="tab${accessTab==='analytics'?' active':''}" onclick="accessTab='analytics';renderPage()">Analytics</div>
+  </div>
+  ${accessTab==='audience'?renderAudience():accessTab==='calibration'?renderCalib():renderAnalytics()}`;
+}
+function renderAudience() {
+  return `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <input type="text" placeholder="🔍 Search Users" style="width:200px;font-size:12px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="tog-row" style="margin:0;font-size:12px">
+        Calibration Mode <span style="background:#dbeafe;color:#1d4ed8;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-left:4px">ℹ</span>
+        <label class="tog" style="margin-left:6px"><input type="checkbox"><span class="tog-s"></span></label>
+      </div>
+      <span style="font-size:12px;color:#8080a0">Users <strong style="color:#1a1a2e">7</strong></span>
+      <button class="btn-p" style="font-size:12px">+ Add Audience</button>
+    </div>
+  </div>
+  <div class="card">
+    <table class="tbl">
+      <thead style="background:#7c3aed">
+        <tr>${['NAME','ROLE','MANAGER','TEAMS','TERRITORIES','ADDED ON',''].map(h=>`<th style="background:#7c3aed;color:#fff;border-bottom:none">${h}</th>`).join('')}</tr>
+      </thead>
+      <tbody>
+        ${ACCESS_USERS.map(u=>`<tr>
+          <td><div style="display:flex;align-items:center;gap:8px">
+            <div class="u-av" style="background:${u.c}">${u.i}</div>
+            <span style="font-weight:500;font-size:13px">${u.n}</span>
+          </div></td>
+          <td style="color:#8080a0;font-size:12px">${u.r}</td>
+          <td style="color:#c0c0d0;font-size:12px">—</td>
+          <td style="font-size:12px">${u.t}</td>
+          <td style="font-size:12px;color:#8080a0">${u.tr}</td>
+          <td style="font-size:12px;color:#8080a0">${u.d}</td>
+          <td><button style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:16px">🗑</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:12px">
+    <button class="btn-s" style="width:30px;height:30px;padding:0;font-size:13px">‹</button>
+    <button class="btn-p" style="width:30px;height:30px;padding:0;font-size:13px">1</button>
+    <button class="btn-s" style="width:30px;height:30px;padding:0;font-size:13px">›</button>
+  </div>`;
+}
+function renderCalib() {
+  return `
+  <div class="info-b">ℹ Calibration feedback helps improve JOY's responses over time. Enable Calibration Mode in the Audience tab to collect rep feedback on each response.</div>
+  <div style="text-align:center;padding:48px 20px;color:#a0a0b0">
+    <div style="font-size:42px;margin-bottom:14px">📊</div>
+    <div style="font-size:15px;font-weight:700;color:#3d3d5c;margin-bottom:6px">No calibration feedback yet</div>
+    <div style="font-size:13px">Feedback will appear here once reps start rating JOY's responses in the field.</div>
+  </div>`;
+}
+function renderAnalytics() {
+  return `
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:22px">
+    ${[['Total Conversations','142'],['Active Users','7'],['Avg Session Length','4.2m'],['Top Skill Used','Precall 360'],['Guardrail Triggers','3'],['Satisfaction Rate','94%']].map(([l,v])=>`<div class="ev-card"><div class="ev-lbl">${l}</div><div class="ev-val" style="font-size:${v.length>4?'18px':'26px'}">${v}</div></div>`).join('')}
+  </div>
+  <div class="card" style="padding:16px">
+    <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#1a1a2e">Skill Usage — Last 30 Days</div>
+    ${[['Precall 360 Account Prep',38],['Competitive Intelligence',24],['Call Scheduling & Route',22],['Product Knowledge',18],['Objection Handling',16],['Call Capture & Tracking',14],['Selling Framework',10]].map(([name,pct])=>`
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:#3d3d5c">${name}</span><span style="color:#a0a0b0;font-weight:600">${pct}%</span></div>
+      <div style="height:6px;background:#f0f0f8;border-radius:3px"><div style="height:6px;background:linear-gradient(90deg,#7c3aed,#9f67f5);border-radius:3px;width:${pct}%"></div></div>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ── Action panel ─────────────────────────────────────
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function colorSql(raw){
+  const KWS = ['SELECT','FROM','WHERE','AND','OR','NOT','IN','IS','NULL','ORDER','BY','GROUP','HAVING','LIMIT','INSERT','INTO','VALUES','UPDATE','SET','JOIN','LEFT','RIGHT','INNER','OUTER','ON','AS','CASE','WHEN','THEN','ELSE','END','DISTINCT','TRUE','FALSE','COUNT','SUM','AVG','MAX','MIN','ROUND','NULLIF','ILIKE','CURRENT_QUARTER','LAST_N_MONTHS'];
+  let s = escHtml(raw);
+  // params :name
+  s = s.replace(/(:[\w]+)/g,'<span class="sql-param">$1</span>');
+  // strings
+  s = s.replace(/('([^']|'')*')/g,'<span class="sql-str">$1</span>');
+  // numbers
+  s = s.replace(/\b(\d+)\b(?![^<]*<\/span>)/g,'<span class="sql-num">$1</span>');
+  // keywords (word boundary, not inside spans)
+  KWS.forEach(kw=>{
+    s = s.replace(new RegExp(`(?<![\\w>])${kw}(?![\\w<])`, 'g'),`<span class="sql-kw">${kw}</span>`);
+  });
+  return s;
+}
+function openAction(toolName, actionId){
+  const acts = TOOL_ACTIONS[toolName]||[];
+  const action = acts.find(a=>a.id===actionId);
+  if(!action) return;
+  currentAction = {toolName, actionId};
+  const tool = TOOLS.find(t=>t.name===toolName)||{icon:'?',ic:'#666',ib:'#f5f5f5'};
+  document.getElementById('actPanelTitle').textContent = action.label;
+  document.getElementById('actPanelTool').innerHTML =
+    `<span style="width:16px;height:16px;border-radius:3px;background:${tool.ib};color:${tool.ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:9px;vertical-align:middle;margin-right:4px">${tool.icon}</span>${toolName}`;
+  const isSql = action.type==='sql'||action.type==='soql';
+  const qLabel = action.type==='soql'?'SOQL QUERY (Veeva / Salesforce)':action.type==='sql'?'SQL QUERY (Snowflake)':'API CALL';
+  const enabledBadge = action.enabled
+    ?`<span class="ena-tag">Enabled</span>`
+    :`<span style="background:#fef3c7;color:#92400e;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:600">Disabled</span>`;
+  document.getElementById('actPanelBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <label class="tog"><input type="checkbox" ${action.enabled?'checked':''}><span class="tog-s"></span></label>
+      <span style="font-size:13px;font-weight:600">${action.label}</span>
+      ${enabledBadge}
+    </div>
+    <div style="background:#f7f7fb;border-radius:6px;padding:9px 12px;margin-bottom:14px;font-size:12px;color:#8080a0;border:1.5px solid #e2e2ec">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">DEFINITION</div>
+      ${action.desc}
+    </div>
+    <div class="fg"><label class="fl">* Name</label><input type="text" value="${action.id}"></div>
+    <div class="fg"><label class="fl">* Description</label><textarea>${action.desc}</textarea></div>
+    ${isSql?`
+    <div style="font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+      ${qLabel}
+      <span style="background:#1e1e2e;color:#cba6f7;padding:1px 7px;border-radius:4px;font-size:9px;font-weight:700">${action.type.toUpperCase()}</span>
+    </div>
+    <div class="sql-block">${colorSql(action.sql)}</div>`:''}
+    <div style="font-size:10px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">PARAMETERS</div>
+    ${action.params.map(p=>`
+    <div style="border:1.5px solid #e2e2ec;border-radius:8px;padding:12px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:${p.desc?'10':'0'}px">
+        <label class="tog"><input type="checkbox" checked><span class="tog-s"></span></label>
+        <span style="font-size:13px;font-weight:600">${p.name}</span>
+        <span style="background:#dbeafe;color:#1d4ed8;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600">${p.type}</span>
+        ${p.required
+          ?`<span style="margin-left:auto;background:#fef9c3;color:#713f12;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600">required</span>`
+          :`<span style="margin-left:auto;background:#f0f0f8;color:#a0a0b0;padding:1px 7px;border-radius:4px;font-size:11px">optional</span>`}
+      </div>
+      ${p.desc?`<div class="fg" style="margin:0"><label class="fl" style="font-size:10px">DESCRIPTION</label><input type="text" value="${escHtml(p.desc)}" style="font-size:12px"></div>`:''}
+    </div>`).join('')}
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn-rm" style="padding:7px 16px">Delete</button>
+      <button class="btn-p" style="padding:7px 18px">Save</button>
+    </div>`;
+  document.getElementById('actPanel').classList.add('open');
+}
+function closeActPanel(){
+  document.getElementById('actPanel').classList.remove('open');
+  currentAction = null;
+}
+
+// ── Modal ────────────────────────────────────────────
+function openModal(){document.getElementById('toolModal').classList.add('open');switchMTab('Content',document.querySelector('#mtTabs .tab'));}
+function closeModal(){document.getElementById('toolModal').classList.remove('open');}
+function switchMTab(t,el){
+  mtab=t;
+  document.querySelectorAll('#mtTabs .tab').forEach(x=>x.classList.remove('active'));
+  if(el)el.classList.add('active');
+  else document.querySelectorAll('#mtTabs .tab').forEach(x=>{if(x.textContent===t)x.classList.add('active');});
+  const items=MODAL_TOOLS[t]||[];
+  document.getElementById('mtBody').innerHTML = items.length===0
+    ?`<div style="text-align:center;padding:32px;color:#a0a0b0;font-size:13px">All tools have been added</div>`
+    :items.map(item=>`<div class="m-tool" style="${item.added?'opacity:.55;pointer-events:none':''}">
+      <div class="m-ico" style="background:${item.ib};color:${item.ic}">${item.icon}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${item.name}</div><div style="font-size:11px;color:#a0a0b0">${item.desc}</div></div>
+      ${item.added?`<span style="font-size:11px;color:#16a34a;font-weight:700">✓ Added</span>`:`<button class="btn-p" style="font-size:11px">Add</button>`}
+    </div>`).join('');
+}
+document.getElementById('toolModal').addEventListener('click',e=>{if(e.target===document.getElementById('toolModal'))closeModal();});
+
+// ── Slide panel ──────────────────────────────────────
+function openPanel(){document.getElementById('resPanel').classList.add('open');}
+function closePanel(){document.getElementById('resPanel').classList.remove('open');}
+
+// ── Init ─────────────────────────────────────────────
+renderNav();
+renderPage();
+renderFooter();
+</script>
+</body>
+</html>
