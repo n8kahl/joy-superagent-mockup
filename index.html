@@ -606,6 +606,7 @@ const TOOLS = [
   {name:'Veeva CRM',             type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
   {name:'ACTO Learning',         type:'lms',     icon:'▶',  ic:'#7c3aed', ib:'#f5f3ff'},
   {name:'ACTO Coaching Data',    type:'lms',     icon:'◈',  ic:'#db2777', ib:'#fdf2f8'},
+  {name:'CxZone',                type:'lms',     icon:'Cx', ic:'#1d4ed8', ib:'#eff6ff'},
 ];
 
 const MODAL_TOOLS = {
@@ -622,7 +623,8 @@ const MODAL_TOOLS = {
   Agents:[],
   LMS:[
     {name:'ACTO Learning',icon:'▶',ic:'#7c3aed',ib:'#f5f3ff',desc:'Rep quiz scores and ACTION pack completion tracking',added:true},
-    {name:'ACTO Coaching Data',icon:'◈',ic:'#db2777',ib:'#fdf2f8',desc:'Field coaching reports and CxZone role-play scenario data',added:true},
+    {name:'ACTO Coaching Data',icon:'◈',ic:'#db2777',ib:'#fdf2f8',desc:'Field coaching reports and manager observation data',added:true},
+    {name:'CxZone',icon:'Cx',ic:'#1d4ed8',ib:'#eff6ff',desc:'Role-play scenario completions, AI feedback, and coaching assessments',added:true},
   ],
 };
 
@@ -684,8 +686,14 @@ const TOOL_ACTIONS = {
   'ACTO Coaching Data': [
     {id:'get-field-coaching-report', label:'Get Field Coaching Report',  desc:'Pulls Field Coaching Report (FCR) data from ACTO including observed competencies, manager ratings, and development notes.', enabled:true, type:'api',
      params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID to retrieve coaching reports for'},{name:'date_from',type:'date',required:false,desc:'Earliest FCR date to include'},{name:'competency',type:'string',required:false,desc:'Filter by competency area e.g. Objection Handling, Product Knowledge, Selling Skills'}]},
-    {id:'get-cxzone-scenario-completion',label:'Get CxZone Scenario Completion',desc:'Retrieves completed CxZone role-play scenario records including scores, AI feedback, and manager assessments.',    enabled:true, type:'api',
-     params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID — omit for team-level view'},{name:'scenario_name',type:'string',required:false,desc:'Filter to a specific CxZone scenario or scenario category'},{name:'date_from',type:'date',required:false,desc:'Start date for scenario completion records'}]},
+    {id:'get-coaching-trends',       label:'Get Coaching Trends',        desc:'Aggregates FCR data across reps and time periods to surface recurring competency gaps and improvement patterns.', enabled:false, type:'api',
+     params:[{name:'team_id',type:'string',required:false,desc:'Team or district ID for aggregate view'},{name:'competency',type:'string',required:false,desc:'Focus on a specific competency area'},{name:'date_from',type:'date',required:false,desc:'Start of the trend window'}]},
+  ],
+  'CxZone': [
+    {id:'get-scenario-completion',   label:'Get Scenario Completion',    desc:'Retrieves completed CxZone role-play scenario records including scores, AI feedback, and manager assessments.',            enabled:true, type:'api',
+     params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID — omit for team-level view'},{name:'scenario_name',type:'string',required:false,desc:'Filter to a specific scenario or category'},{name:'date_from',type:'date',required:false,desc:'Start date for completion records'}]},
+    {id:'get-scenario-feedback',     label:'Get Scenario Feedback',      desc:'Returns detailed AI and manager feedback from CxZone sessions including talk track analysis and improvement recommendations.', enabled:true, type:'api',
+     params:[{name:'rep_id',type:'string',required:true,desc:'Rep ID to retrieve feedback for'},{name:'scenario_id',type:'string',required:false,desc:'Specific scenario session ID for detailed feedback'}]},
   ],
 };
 
@@ -696,7 +704,7 @@ const SKILL_TOOLS = {
   3: ['Veeva Key People','Veeva CRM'],
   4: ['Veeva Key People','Veeva CRM'],
   5: ['ClinicalTrials.gov','Veeva Vault PromoMats'],
-  6: ['ACTO CMS','Veeva Vault PromoMats','ACTO Coaching Data'],
+  6: ['ACTO CMS','Veeva Vault PromoMats','ACTO Coaching Data','CxZone'],
   7: ['ACTO CMS','Veeva Vault PromoMats'],
   8: ['Veeva Key People','Veeva CRM','Snowflake'],
   9: ['Snowflake'],
@@ -779,6 +787,7 @@ function toolIconSpan(name, ib, ic, icon, size, radius) {
   if(sf) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e8f5fc;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://companieslogo.com/img/orig/SNOW-35164165.png?t=1751096598" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='❄'"></span>`;
   if(veeva) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#fff3ee;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://play-lh.googleusercontent.com/Aahvo0l5f4ZtGjka1wLw3qcXArMJgFPec6EVB6HLBCQP2ivagqrnbSXiEPitr-lRmQ=w480-h960-rw" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='V'"></span>`;
   if(acto) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e6f7f5;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 100 90" width="${imgSize}" height="${imgSize}" xmlns="http://www.w3.org/2000/svg"><path d="M50,4 L97,86 L77,86 L50,30 L23,86 L3,86 Z" fill="#2aaca0"/></svg></span>`;
+  if(name==='CxZone') return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://scontent.ffcm1-2.fna.fbcdn.net/v/t39.30808-6/309886976_591715772743667_1136739150436322784_n.png?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=dboJrQM-lFgQ7kNvwHZAHht&_nc_oc=AdqMvNlYwwlOD0EiYDS-HdgvDubt37cnJfUIJJQK2a5DN1GcahPLVkRzTTvxpdq2hAVLClv6ZaD4uJud1m9c8ytt&_nc_zt=23&_nc_ht=scontent.ffcm1-2.fna&_nc_gid=qpT0nswN6ckqMLqkhjYLVg&_nc_ss=7b289&oh=00_Af5l80EP4d2yDAR8OAnhRjEgdcQymo3dOCrv5u6nNAaP_g&oe=6A113007" width="${imgSize}" height="${imgSize}" style="object-fit:contain" onerror="this.parentNode.innerHTML='Cx'"></span>`;
   return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${ib};color:${ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:${Math.round(size*.5)}px;flex-shrink:0">${icon}</span>`;
 }
 
