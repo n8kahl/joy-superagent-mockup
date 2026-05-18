@@ -604,6 +604,8 @@ const TOOLS = [
   {name:'Snowflake',             type:'data',    icon:'❄',  ic:'#2563eb', ib:'#eff6ff'},
   {name:'Veeva Key People',      type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
   {name:'Veeva CRM',             type:'crm',     icon:'V',  ic:'#065f46', ib:'#d1fae5'},
+  {name:'ACTO Learning',         type:'lms',     icon:'▶',  ic:'#7c3aed', ib:'#f5f3ff'},
+  {name:'ACTO Coaching Data',    type:'lms',     icon:'◈',  ic:'#db2777', ib:'#fdf2f8'},
 ];
 
 const MODAL_TOOLS = {
@@ -617,7 +619,11 @@ const MODAL_TOOLS = {
     {name:'Veeva Key People',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP profile lookup and territory stakeholder mapping',added:true},
     {name:'Veeva CRM',icon:'V',ic:'#065f46',ib:'#d1fae5',desc:'HCP relationship tracking, call history, and account planning',added:true},
   ],
-  Agents:[],LMS:[],
+  Agents:[],
+  LMS:[
+    {name:'ACTO Learning',icon:'▶',ic:'#7c3aed',ib:'#f5f3ff',desc:'Rep quiz scores and ACTION pack completion tracking',added:true},
+    {name:'ACTO Coaching Data',icon:'◈',ic:'#db2777',ib:'#fdf2f8',desc:'Field coaching reports and CxZone role-play scenario data',added:true},
+  ],
 };
 
 const TOOL_ACTIONS = {
@@ -669,16 +675,28 @@ const TOOL_ACTIONS = {
      sql:`SELECT\n  ap.Id,\n  ap.Name,\n  ap.Account_vod__r.Name,\n  ap.Cycle_Plan_vod__c,\n  ap.Target_vod__c,\n  ap.Actual_vod__c,\n  ap.Goal_vod__c,\n  ap.Start_Date_vod__c,\n  ap.End_Date_vod__c\nFROM Account_Plan_vod__c ap\nWHERE ap.Account_vod__c = :hcp_id\n  AND ap.Active_vod__c = TRUE\nORDER BY ap.Start_Date_vod__c DESC`,
      params:[{name:'hcp_id',type:'string',required:true,desc:'Veeva Account ID'}]},
   ],
+  'ACTO Learning': [
+    {id:'get-quiz-scores',          label:'Get Quiz Scores',            desc:'Retrieves rep quiz scores by module or course from ACTO Learning, including pass/fail status and attempt history.',   enabled:true,  type:'api',
+     params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID to filter scores — omit for territory-wide view'},{name:'module_name',type:'string',required:false,desc:'Filter to a specific learning module or course name'},{name:'date_from',type:'date',required:false,desc:'Start date for score history'}]},
+    {id:'get-action-pack-completion',label:'Get ACTION Pack Completion', desc:'Fetches ACTION pack completion records, status, and due dates for reps — useful for identifying knowledge gaps.',   enabled:true,  type:'api',
+     params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID — omit to retrieve completion data across the team'},{name:'pack_name',type:'string',required:false,desc:'Filter to a specific ACTION pack by name'},{name:'status',type:'string',required:false,desc:'Filter by status: Completed, In Progress, Not Started, Overdue'}]},
+  ],
+  'ACTO Coaching Data': [
+    {id:'get-field-coaching-report', label:'Get Field Coaching Report',  desc:'Pulls Field Coaching Report (FCR) data from ACTO including observed competencies, manager ratings, and development notes.', enabled:true, type:'api',
+     params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID to retrieve coaching reports for'},{name:'date_from',type:'date',required:false,desc:'Earliest FCR date to include'},{name:'competency',type:'string',required:false,desc:'Filter by competency area e.g. Objection Handling, Product Knowledge, Selling Skills'}]},
+    {id:'get-cxzone-scenario-completion',label:'Get CxZone Scenario Completion',desc:'Retrieves completed CxZone role-play scenario records including scores, AI feedback, and manager assessments.',    enabled:true, type:'api',
+     params:[{name:'rep_id',type:'string',required:false,desc:'Rep ID — omit for team-level view'},{name:'scenario_name',type:'string',required:false,desc:'Filter to a specific CxZone scenario or scenario category'},{name:'date_from',type:'date',required:false,desc:'Start date for scenario completion records'}]},
+  ],
 };
 
 const SKILL_TOOLS = {
-  0: ['ACTO CMS','Veeva Vault PromoMats'],
+  0: ['ACTO CMS','Veeva Vault PromoMats','ACTO Learning'],
   1: ['Veeva Key People','Veeva CRM'],
   2: ['Veeva Key People','Veeva CRM','Snowflake'],
   3: ['Veeva Key People','Veeva CRM'],
   4: ['Veeva Key People','Veeva CRM'],
   5: ['ClinicalTrials.gov','Veeva Vault PromoMats'],
-  6: ['ACTO CMS','Veeva Vault PromoMats'],
+  6: ['ACTO CMS','Veeva Vault PromoMats','ACTO Coaching Data'],
   7: ['ACTO CMS','Veeva Vault PromoMats'],
   8: ['Veeva Key People','Veeva CRM','Snowflake'],
   9: ['Snowflake'],
