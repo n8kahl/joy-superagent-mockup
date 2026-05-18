@@ -774,10 +774,11 @@ let ctxDocs = [
 // ── Brand icon helper ────────────────────────────────
 function toolIconSpan(name, ib, ic, icon, size, radius) {
   size = size||26; radius = radius||Math.round(size*.25);
-  const sf = name==='Snowflake', veeva = name.startsWith('Veeva');
+  const sf = name==='Snowflake', veeva = name.startsWith('Veeva'), acto = name.startsWith('ACTO');
   const imgSize = Math.round(size*.72);
   if(sf) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e8f5fc;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://companieslogo.com/img/orig/SNOW-35164165.png?t=1751096598" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='❄'"></span>`;
   if(veeva) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#fff3ee;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden"><img src="https://play-lh.googleusercontent.com/Aahvo0l5f4ZtGjka1wLw3qcXArMJgFPec6EVB6HLBCQP2ivagqrnbSXiEPitr-lRmQ=w480-h960-rw" width="${imgSize}" height="${imgSize}" class="tool-logo" onerror="this.parentNode.innerHTML='V'"></span>`;
+  if(acto) return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:#e6f7f5;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 100 90" width="${imgSize}" height="${imgSize}" xmlns="http://www.w3.org/2000/svg"><path d="M50,4 L97,86 L77,86 L50,30 L23,86 L3,86 Z" fill="#2aaca0"/></svg></span>`;
   return `<span style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${ib};color:${ic};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:${Math.round(size*.5)}px;flex-shrink:0">${icon}</span>`;
 }
 
